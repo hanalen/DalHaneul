@@ -77,6 +77,7 @@ export const CommonProvider: React.FC<{ children: ReactNode }> = ({
         width: 240,
       });
       store.dispatch(uiSlice.actions.setTabs(tabs));
+      SaveTabs(tabs);
     }
   };
 
