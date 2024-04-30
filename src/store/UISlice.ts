@@ -1,35 +1,28 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-const defaultTabs: TimeLineTab[] = [
-  {
-    name: '홈',
-    icon: 'home',
-    width: 240,
-  },
-  {
-    name: '알림',
-    icon: 'notifications',
-    width: 240,
-  },
-];
+export enum ETabType {
+  HOME,
+  NOTIFICATION,
+  FEED,
+  LIST,
+  PROFILE,
+  SEARCH,
+  FAVORITE,
+}
 
-export interface TimeLineTab {
+export interface Tab {
   /**
    * 계정 고유 ID
    */
-  did?: string;
+  did: string;
   /**
    * 계정명
    */
-  handle?: string;
+  handle: string;
   /**
-   * 메뉴명
+   * 탭 타입
    */
-  name: string;
-  /**
-   * 메뉴 아이콘
-   */
-  icon: string;
+  tabType: ETabType;
   /**
    * 메뉴 너비
    */
@@ -37,29 +30,18 @@ export interface TimeLineTab {
 }
 
 export type UIState = {
-  tabs: TimeLineTab[];
+  tabs: Tab[];
 };
 
 const initialState: UIState = {
-  tabs: [
-    {
-      name: '홈',
-      icon: 'home',
-      width: 240,
-    },
-    {
-      name: '알림',
-      icon: 'notifications',
-      width: 240,
-    },
-  ],
+  tabs: [],
 };
 
 export const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
-    setTabs: (state, action: PayloadAction<TimeLineTab[]>) => {
+    setTabs: (state, action: PayloadAction<Tab[]>) => {
       state.tabs = action.payload;
     },
   },

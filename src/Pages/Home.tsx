@@ -18,13 +18,14 @@ function Home() {
 
   useEffect(() => {
     common.LoadSession();
+    common.LoadTabs();
   }, []);
   return (
     <div className="w-screen h-screen flex">
       <Menus />
       <PostInput />
-      {tabs.map((tab) => {
-        return <TimeLine tab={tab} />;
+      {tabs.map((tab, index) => {
+        return <TimeLine tab={tab} key={index} />;
       })}
     </div>
   );
