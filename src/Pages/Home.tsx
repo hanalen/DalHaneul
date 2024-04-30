@@ -12,7 +12,7 @@ import PostInput from './Home/PostInput';
 import TimeLine from './Home/TimeLine';
 
 function Home() {
-  const { agent } = useSelector((state: RootState) => state.userState);
+  const { tabs } = useSelector((state: RootState) => state.uiState);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,9 +27,9 @@ function Home() {
     <div className="w-screen h-screen flex">
       <Menus />
       <PostInput />
-      <TimeLine />
-      <TimeLine />
-      <TimeLine />
+      {tabs.map((tab) => {
+        return <TimeLine tab={tab} />;
+      })}
     </div>
   );
 }

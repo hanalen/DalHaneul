@@ -13,6 +13,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <Provider store={store}>
     <ErrorBoundary>
+      {/* TODO 이 부분에 로컬스토리지 읽는 부분 처리 추가 필요, 토큰처리 및 메뉴처리 */}
       <GlobalDialogProvider>
         <App />
       </GlobalDialogProvider>
