@@ -4,8 +4,10 @@ import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, store } from '../store/Store';
 import { userSlice } from '../store/UserSlice';
+import { useCommon } from '../Providers/CommonProvider';
 
 function Login() {
+  const common = useCommon();
   const { agent } = useSelector((state: RootState) => state.userState);
   const navigate = useNavigate();
   const [id, setId] = React.useState<string>('');
@@ -21,9 +23,9 @@ function Login() {
       });
       console.log(result);
       if (result.success) {
-        localStorage.setItem('agent-token', JSON.stringify(result.data));
         console.log('로그인 성공');
-        navigate('/home');
+        common.SaveSession(result.data);
+        common.RouteToPath('/home');
       }
     } catch (e) {
       console.log(e);
@@ -39,10 +41,7 @@ function Login() {
   };
 
   useEffect(() => {
-    const agentToken = localStorage.getItem('agent-token');
-    if (agentToken) {
-      navigate('/home');
-    } else {
+    if (!common.LoadSession()) {
       setIsRender(true);
     }
   }, []);

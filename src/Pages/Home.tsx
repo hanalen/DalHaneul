@@ -10,18 +10,14 @@ import HomeIcon from '@mui/icons-material/Home';
 import Menus from './Home/Menus';
 import PostInput from './Home/PostInput';
 import TimeLine from './Home/TimeLine';
+import { useCommon } from '../Providers/CommonProvider';
 
 function Home() {
+  const common = useCommon();
   const { tabs } = useSelector((state: RootState) => state.uiState);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const agentToken = localStorage.getItem('agent-token');
-    if (agentToken) {
-      store.dispatch(userSlice.actions.setSession(JSON.parse(agentToken))); // setSession 액션을 디스패치
-    } else {
-      navigate('/login');
-    }
+    common.LoadSession();
   }, []);
   return (
     <div className="w-screen h-screen flex">
