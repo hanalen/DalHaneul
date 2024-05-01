@@ -11,6 +11,7 @@ import Menus from './Home/Menus';
 import PostInput from './Home/PostInput';
 import TimeLine from './Home/TimeLine';
 import { useCommon } from '../Providers/CommonProvider';
+import InputMenu from './Home/InputMenu';
 
 function Home() {
   const common = useCommon();
@@ -23,7 +24,7 @@ function Home() {
   return (
     <div className="w-screen h-screen flex">
       <Menus />
-      <PostInput />
+      <InputMenu />
       {tabs.map((tab, index) => {
         return <TimeLine tab={tab} key={index} />;
       })}
