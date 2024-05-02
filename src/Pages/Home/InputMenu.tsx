@@ -9,7 +9,7 @@ import PostInput from './PostInput';
 
 export interface Posting {
   content: string;
-  image?: string;
+  images: string[];
 }
 
 function InputMenu() {
@@ -21,7 +21,7 @@ function InputMenu() {
   };
 
   const OnClickAdd = () => {
-    postings.push({ content: '', image: '' });
+    postings.push({ content: '', images: [] });
     setPostings([...postings]);
   };
 
@@ -31,8 +31,13 @@ function InputMenu() {
     console.log(postings);
   };
 
+  const OnChangeImages = (index: number, images: string[]) => {
+    postings[index].images = images;
+    setPostings([...postings]);
+  };
+
   useEffect(() => {
-    postings.push({ content: '', image: '' });
+    postings.push({ content: '', images: [] });
     setPostings([...postings]);
   }, []);
 
@@ -43,7 +48,9 @@ function InputMenu() {
           <PostInput
             onChange={OnChange}
             onClickRemove={OnClickRemove}
+            onChangeImages={OnChangeImages}
             content={post.content}
+            images={post.images}
             index={index}
             key={index}
           />
