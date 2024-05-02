@@ -12,49 +12,14 @@ import { RootState, store } from '../../store/Store';
 function InputMenu() {
   const { postings } = useSelector((state: RootState) => state.postState);
 
-  const OnChange = (index: number, text: string) => {
-    store.dispatch(
-      postSlice.actions.onChangePosting({
-        index,
-        content: text,
-        images: postings[index].images,
-      })
-    );
-  };
-
   const OnClickAdd = () => {
     store.dispatch(postSlice.actions.addPost());
-  };
-
-  const OnClickRemove = (index: number) => {
-    postings.splice(index, 1);
-    store.dispatch(postSlice.actions.removePost(index));
-  };
-
-  const OnChangeImages = (index: number, images: string[]) => {
-    store.dispatch(
-      postSlice.actions.onChangePosting({
-        index,
-        content: postings[index].content,
-        images: images,
-      })
-    );
   };
 
   return (
     <div className="w-60 p-2 flex flex-col h-full bg-slate-400 border-r-2 border-slate-700">
       {postings.map((post, index) => {
-        return (
-          <PostInput
-            onChange={OnChange}
-            onClickRemove={OnClickRemove}
-            onChangeImages={OnChangeImages}
-            content={post.content}
-            images={post.images}
-            index={index}
-            key={index}
-          />
-        );
+        return <PostInput posting={post} index={index} key={index} />;
       })}
       <div className="flex justify-between">
         <div className="cursor-pointer" onClick={OnClickAdd}>

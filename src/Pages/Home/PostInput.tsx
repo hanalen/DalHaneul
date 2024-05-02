@@ -7,14 +7,12 @@ import { SvgIcon } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import PostImage from './PostImage';
+import { RootState, store } from '../../store/Store';
+import { Posting, postSlice } from '../../store/PostSlice';
 
 export interface PropPostInput {
   index: number;
-  content: string;
-  images: string[];
-  onChange: (index: number, text: string) => void;
-  onClickRemove: (index: number) => void;
-  onChangeImages: (index: number, img: string[]) => void;
+  posting: Posting;
 }
 
 function PostInput(prop: PropPostInput) {
@@ -23,11 +21,17 @@ function PostInput(prop: PropPostInput) {
 
   const OnChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.target.value);
-    prop.onChange(prop.index, e.target.value);
+    store.dispatch(
+      postSlice.actions.onChangePosting({
+        index: prop.index,
+        content: e.target.value,
+        images: prop.posting.images,
+      })
+    );
   };
 
   const OnClickRemove = () => {
-    prop.onClickRemove(prop.index);
+    store.dispatch(postSlice.actions.removePost(prop.index));
   };
 
   const OnClickAddImage = () => {
@@ -45,7 +49,13 @@ function PostInput(prop: PropPostInput) {
       const img = await FileToString(files[i]);
       images.push(img);
     }
-    prop.onChangeImages(prop.index, [...prop.images, ...images]);
+    store.dispatch(
+      postSlice.actions.onChangePosting({
+        index: prop.index,
+        content: prop.posting.content,
+        images: [...prop.posting.images, ...images],
+      })
+    );
   };
 
   const FileToString = (file: File | null): Promise<string> => {
@@ -63,8 +73,8 @@ function PostInput(prop: PropPostInput) {
   };
 
   useEffect(() => {
-    setInputText(prop.content);
-  }, [prop.content]);
+    setInputText(prop.posting.content);
+  }, [prop.posting.content]);
 
   return (
     <div className="w-full">
@@ -104,7 +114,7 @@ function PostInput(prop: PropPostInput) {
         </div>
       </div>
       <div>
-        {prop.images.map((img, index) => {
+        {prop.posting.images.map((img, index) => {
           return <PostImage src={img} key={index} />;
         })}
       </div>
