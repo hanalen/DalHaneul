@@ -6,40 +6,40 @@ import { uiSlice } from '@/store/UISlice';
 import { SvgIcon } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import PostInput from './PostInput';
-
-export interface Posting {
-  content: string;
-  images: string[];
-}
+import { Posting, postSlice } from '../../store/PostSlice';
+import { RootState, store } from '../../store/Store';
 
 function InputMenu() {
-  const [postings, setPostings] = useState<Posting[]>([]);
+  const { postings } = useSelector((state: RootState) => state.postState);
 
   const OnChange = (index: number, text: string) => {
-    postings[index].content = text;
-    setPostings([...postings]);
+    store.dispatch(
+      postSlice.actions.onChangePosting({
+        index,
+        content: text,
+        images: postings[index].images,
+      })
+    );
   };
 
   const OnClickAdd = () => {
-    postings.push({ content: '', images: [] });
-    setPostings([...postings]);
+    store.dispatch(postSlice.actions.addPost());
   };
 
   const OnClickRemove = (index: number) => {
     postings.splice(index, 1);
-    setPostings([...postings]);
-    console.log(postings);
+    store.dispatch(postSlice.actions.removePost(index));
   };
 
   const OnChangeImages = (index: number, images: string[]) => {
-    postings[index].images = images;
-    setPostings([...postings]);
+    store.dispatch(
+      postSlice.actions.onChangePosting({
+        index,
+        content: postings[index].content,
+        images: images,
+      })
+    );
   };
-
-  useEffect(() => {
-    postings.push({ content: '', images: [] });
-    setPostings([...postings]);
-  }, []);
 
   return (
     <div className="w-60 p-2 flex flex-col h-full bg-slate-400 border-r-2 border-slate-700">
