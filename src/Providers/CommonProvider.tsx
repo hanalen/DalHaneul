@@ -82,6 +82,7 @@ export const CommonProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const SaveSession = (session: AtpSessionData) => {
+    console.log('세션 저장');
     localStorage.setItem('session', JSON.stringify(session));
     RouteToPath('/home');
   };

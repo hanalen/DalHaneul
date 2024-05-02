@@ -16,6 +16,13 @@ import InputMenu from './Home/InputMenu';
 function Home() {
   const common = useCommon();
   const { tabs } = useSelector((state: RootState) => state.uiState);
+  const { agent } = useSelector((state: RootState) => state.userState);
+
+  useEffect(() => {
+    if (agent.session) {
+      common.SaveSession(agent.session);
+    }
+  }, [agent.session]);
 
   useEffect(() => {
     common.LoadSession();
