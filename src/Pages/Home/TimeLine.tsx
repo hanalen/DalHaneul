@@ -1,13 +1,16 @@
-import React, { useEffect } from 'react';
-import { BskyAgent } from '@atproto/api';
+import React, { useEffect, useState } from 'react';
+import { AppBskyFeedDefs, BskyAgent } from '@atproto/api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { ETabType, Tab, uiSlice } from '@/store/UISlice';
+import { ETabType, Tab, uiSlice } from '../../store/UISlice';
 import HomeIcon from '@mui/icons-material/Home';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import MenuIcon from './MenuIcon';
 import { useCommon } from '../../Providers/CommonProvider';
 import { SvgIcon, Icon, IconButton, Box } from '@mui/material';
+import { RootState } from '../../store/Store';
+import PostItem from './PostItem';
+import VirtualScrollPanel from '../VirtualScroll/VirtualScrollPanel';
 
 export interface TimeLineProp {
   tab: Tab;
@@ -15,6 +18,36 @@ export interface TimeLineProp {
 
 function TimeLine(prop: TimeLineProp) {
   const common = useCommon();
+  const [feeds, setFeeds] = useState<AppBskyFeedDefs.FeedViewPost[]>([]);
+
+  const { agent } = useSelector((state: RootState) => state.userState);
+
+  const GetTimeLine = async () => {
+    try {
+      if (!agent.session) return;
+      const response = await agent.getTimeline({
+        cursor: '',
+        limit: 100,
+      });
+      console.log(response);
+      setFeeds(response.data.feed);
+    } catch (e) {
+      //
+    }
+  };
+
+  const GetPosts = () => {
+    const { tabType } = { ...prop.tab };
+
+    if (tabType === ETabType.HOME) {
+      GetTimeLine();
+    }
+  };
+
+  useEffect(() => {
+    GetPosts();
+  }, []);
+
   return (
     <div className="w-80 p-1 h-full">
       <div className="bg-white border border-slate-300 rounded-lg w-full h-full">
@@ -35,6 +68,7 @@ function TimeLine(prop: TimeLineProp) {
           </div>
           <div className="p-2">버튼</div>
         </div>
+        {<VirtualScrollPanel items={feeds} />}
       </div>
     </div>
   );
