@@ -28,7 +28,11 @@ function Menus() {
     <div className="flex flex-col h-screen w-10 bg-slate-200">
       <div className="w-8 h-8 m-1">
         {avatar && (
-          <img src={avatar} alt="avatar" className="w-full h-full rounded-md" />
+          <img
+            src={avatar}
+            alt="avatar"
+            className="w-full h-full rounded-md object-scale-down"
+          />
         )}
       </div>
 
