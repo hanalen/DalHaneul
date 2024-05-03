@@ -18,7 +18,6 @@ export interface TimeLineProp {
 function PostItem(prop: TimeLineProp) {
   const [record, setRecord] = useState<Record>();
   const [author, setAuthor] = useState<AppBskyActorDefs.ProfileViewBasic>();
-  console.log(prop.feed.post.record);
 
   useEffect(() => {
     // record가 {} 타입이라 새로 타입 정의하여 사용

@@ -70,12 +70,12 @@ export const CommonProvider: React.FC<{ children: ReactNode }> = ({
         handle: session.handle,
         width: 240,
       });
-      tabs.push({
-        did: session.did,
-        tabType: ETabType.NOTIFICATION,
-        handle: session.handle,
-        width: 240,
-      });
+      // tabs.push({
+      //   did: session.did,
+      //   tabType: ETabType.NOTIFICATION,
+      //   handle: session.handle,
+      //   width: 240,
+      // });
       store.dispatch(uiSlice.actions.setTabs(tabs));
       SaveTabs(tabs);
     }

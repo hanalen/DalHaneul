@@ -49,7 +49,7 @@ function TimeLine(prop: TimeLineProp) {
   }, []);
 
   return (
-    <div className="w-80 p-1 h-full">
+    <div className="w-full p-1 h-full">
       <div className="bg-white border border-slate-300 rounded-lg w-full h-full">
         <div className="px-1 py-2 flex justify-between">
           <div className="flex">
@@ -68,7 +68,7 @@ function TimeLine(prop: TimeLineProp) {
           </div>
           <div className="p-2">버튼</div>
         </div>
-        {<VirtualScrollPanel items={feeds} />}
+        <VirtualScrollPanel items={feeds} minHeight={0} maxItemCount={1000} />
       </div>
     </div>
   );
