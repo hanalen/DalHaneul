@@ -72,14 +72,25 @@ function PostInput(prop: PropPostInput) {
     });
   };
 
+  const classCountLabel =
+    inputText.length > 300 ? 'text-red-500' : 'text-black';
+
   useEffect(() => {
     setInputText(prop.posting.text);
   }, [prop.posting.text]);
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
+      {prop.index > 0 && (
+        <SvgIcon
+          className="cursor-pointer absolute top-1 right-1"
+          component={CloseIcon}
+          fontSize={'small'}
+          onClick={OnClickRemove}
+        />
+      )}
       <textarea
-        className="w-full p-2 outline-neutral-400 rounded-lg bg-white resize-none mb-1"
+        className="w-full p-2 pr-6 border border-gray-400 outline-neutral-400 rounded-lg bg-white resize-none mb-1"
         onChange={OnChangeTextArea}
         value={inputText}
       />
@@ -91,29 +102,22 @@ function PostInput(prop: PropPostInput) {
         onChange={OnChangeFile}
         multiple
       />
-      <div className="flex justify-between text-xs mb-1 text-white">
-        <div>
+      <div className="flex justify-between text-xs mb-2">
+        <div className="text-black">
           <SvgIcon
             component={AddPhotoAlternateIcon}
-            fontSize={'small'}
+            fontSize={'medium'}
             className="cursor-pointer"
             onClick={OnClickAddImage}
           />
-          {prop.index > 0 && (
-            <SvgIcon
-              className="cursor-pointer"
-              component={CloseIcon}
-              fontSize={'small'}
-              onClick={OnClickRemove}
-            />
-          )}
         </div>
-
         <div className="flex flex-col justify-center">
-          <label>{`${inputText.length} / 300`}</label>
+          <label
+            className={classCountLabel}
+          >{`${inputText.length} / 300`}</label>
         </div>
       </div>
-      <div>
+      <div className="mb-2">
         {prop.posting.images.map((img, index) => {
           return (
             <PostImage

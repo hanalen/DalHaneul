@@ -66,21 +66,34 @@ function InputMenu() {
     setIsSending(false);
   };
 
+  const isDisabledAddThread =
+    postings.length > 0 && postings[postings.length - 1].text === '';
+
   return (
-    <div className="w-80 p-2 flex flex-col h-full bg-slate-400 border-r-2 border-slate-700 relative">
-      {postings.map((post, index) => {
-        return <PostInput posting={post} index={index} key={index} />;
-      })}
-      <div className="flex justify-between">
-        <div className="cursor-pointer" onClick={OnClickAdd}>
-          <SvgIcon component={AddIcon} />
+    <div className="w-80 p-2 flex flex-col h-full bg-white relative">
+      <div className="border p-2 min-h-full overflow-y-auto border-gray-400 rounded-lg">
+        <div className="flex justify-between mb-2">
+          <div></div>
+          <button
+            className="py-1 px-4 text-white rounded-lg bg-blue-500"
+            onClick={OnClickSend}
+          >
+            {postings.length === 1 ? '보내기' : '모두 보내기'}
+          </button>
         </div>
-        <button
-          className="py-1 px-4 text-white rounded-lg bg-blue-500"
-          onClick={OnClickSend}
-        >
-          {postings.length === 1 ? '보내기' : '모두 보내기'}
-        </button>
+        {postings.map((post, index) => {
+          return <PostInput posting={post} index={index} key={index} />;
+        })}
+        <div className="flex justify-end">
+          <button
+            disabled={isDisabledAddThread}
+            className={`bg-blue-500 text-white py-1 px-2 rounded-md ${isDisabledAddThread ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : ''}`}
+            onClick={OnClickAdd}
+          >
+            <SvgIcon component={AddIcon} />
+            <span>스레드 추가</span>
+          </button>
+        </div>
       </div>
       {isSending && (
         <div className="w-80 h-screen cursor-wait bg-black opacity-30 absolute left-0 top-0"></div>
