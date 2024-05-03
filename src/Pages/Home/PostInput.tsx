@@ -115,7 +115,14 @@ function PostInput(prop: PropPostInput) {
       </div>
       <div>
         {prop.posting.images.map((img, index) => {
-          return <PostImage src={img} key={index} />;
+          return (
+            <PostImage
+              src={img}
+              key={index}
+              postIndex={prop.index}
+              imageIndex={index}
+            />
+          );
         })}
       </div>
     </div>

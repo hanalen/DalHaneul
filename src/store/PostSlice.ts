@@ -19,6 +19,11 @@ export interface ActionChangePosting {
   images: string[];
 }
 
+export interface ActionRemoveImage {
+  postIndex: number;
+  imageIndex: number;
+}
+
 export const postSlice = createSlice({
   name: 'post',
   initialState,
@@ -34,6 +39,11 @@ export const postSlice = createSlice({
     },
     removePost: (state, action: PayloadAction<number>) => {
       state.postings.splice(action.payload, 1);
+    },
+    removeImage: (state, action: PayloadAction<ActionRemoveImage>) => {
+      const { postings } = { ...state };
+      const post = postings[action.payload.postIndex];
+      post.images.splice(action.payload.imageIndex, 1);
     },
   },
 });
