@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface Posting {
-  content: string;
+  text: string;
   images: string[];
 }
 
@@ -10,12 +10,12 @@ export type PostState = {
 };
 
 const initialState: PostState = {
-  postings: [{ content: '', images: [] }],
+  postings: [{ text: '', images: [] }],
 };
 
 export interface ActionChangePosting {
   index: number;
-  content: string;
+  text: string;
   images: string[];
 }
 
@@ -25,12 +25,12 @@ export const postSlice = createSlice({
   reducers: {
     onChangePosting: (state, action: PayloadAction<ActionChangePosting>) => {
       state.postings[action.payload.index] = {
-        content: action.payload.content,
+        text: action.payload.text,
         images: action.payload.images,
       };
     },
     addPost: (state) => {
-      state.postings.push({ content: '', images: [] });
+      state.postings.push({ text: '', images: [] });
     },
     removePost: (state, action: PayloadAction<number>) => {
       state.postings.splice(action.payload, 1);

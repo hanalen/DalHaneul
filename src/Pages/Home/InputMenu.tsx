@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BskyAgent } from '@atproto/api';
+import { BskyAgent, ComAtprotoRepoUploadBlob } from '@atproto/api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { uiSlice } from '@/store/UISlice';
@@ -20,34 +20,46 @@ function InputMenu() {
   const OnClickAdd = () => {
     store.dispatch(postSlice.actions.addPost());
   };
-  const convertDataURIToBinary = (dataURI: string) => {
-    return Uint8Array.from(
-      window.atob(dataURI.replace(/^data[^,]+,/, '')),
-      (v) => v.charCodeAt(0)
-    );
-  };
+  function Base64ToUint8Array(base64Data: string): {
+    array: Uint8Array;
+    contentType: string;
+  } {
+    // Split the base64 data into two parts: metadata and actual data
+    const parts = base64Data.split(';base64,');
+    const contentType = parts[0].split(':')[1];
+    const raw = window.atob(parts[1]);
+
+    // Create an ArrayBuffer object to represent the raw binary data
+    const arrayBuffer = new ArrayBuffer(raw.length);
+    const view = new Uint8Array(arrayBuffer);
+
+    // Copy the raw binary data into the ArrayBuffer
+    for (let i = 0; i < raw.length; i++) {
+      view[i] = raw.charCodeAt(i);
+    }
+    return { array: view, contentType: contentType };
+    // Create a Blob object from the ArrayBuffer
+    // return new Blob([arrayBuffer], { type: contentType });
+  }
 
   const OnClickSend = async () => {
     setIsSending(true);
-    for (let i = 0; i < postings.length; i++) {
-      const post = postings[i];
+    for (const posting of postings) {
       const images: Image[] = [];
-      if (post.images.length > 0) {
-        const result = await agent.uploadBlob(post.images[0], {
-          encoding: 'base64',
-        });
-        // const results = await Promise.all(
-        //   post.images.map((image) => agent.uploadBlob(image), {
-        //     encode: 'base64',
-        //   })
-        // );
-        // for (const image of results) {
-        //   images.push({ image: image.data.blob, alt: '' });
-        // }
+      const promises: Promise<ComAtprotoRepoUploadBlob.Response>[] = [];
+      for (const image of posting.images) {
+        {
+          const { array, contentType } = Base64ToUint8Array(image);
+          promises.push(agent.uploadBlob(array, { encoding: contentType }));
+        }
+      }
+      const results = await Promise.all(promises);
+      for (const result of results) {
+        images.push({ image: result.data.blob, alt: '' });
       }
 
       await agent.post({
-        content: post.content,
+        text: posting.text,
         embed: { $type: 'app.bsky.embed.images', images: images },
       });
     }

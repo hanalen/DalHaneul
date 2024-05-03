@@ -24,7 +24,7 @@ function PostInput(prop: PropPostInput) {
     store.dispatch(
       postSlice.actions.onChangePosting({
         index: prop.index,
-        content: e.target.value,
+        text: e.target.value,
         images: prop.posting.images,
       })
     );
@@ -52,7 +52,7 @@ function PostInput(prop: PropPostInput) {
     store.dispatch(
       postSlice.actions.onChangePosting({
         index: prop.index,
-        content: prop.posting.content,
+        text: prop.posting.text,
         images: [...prop.posting.images, ...images],
       })
     );
@@ -73,8 +73,8 @@ function PostInput(prop: PropPostInput) {
   };
 
   useEffect(() => {
-    setInputText(prop.posting.content);
-  }, [prop.posting.content]);
+    setInputText(prop.posting.text);
+  }, [prop.posting.text]);
 
   return (
     <div className="w-full">
