@@ -67,7 +67,7 @@ function InputMenu() {
   };
 
   return (
-    <div className="w-60 p-2 flex flex-col h-full bg-slate-400 border-r-2 border-slate-700 relative">
+    <div className="w-80 p-2 flex flex-col h-full bg-slate-400 border-r-2 border-slate-700 relative">
       {postings.map((post, index) => {
         return <PostInput posting={post} index={index} key={index} />;
       })}
@@ -83,7 +83,7 @@ function InputMenu() {
         </button>
       </div>
       {isSending && (
-        <div className="w-60 h-screen cursor-wait bg-black opacity-30 absolute left-0 top-0"></div>
+        <div className="w-80 h-screen cursor-wait bg-black opacity-30 absolute left-0 top-0"></div>
       )}
     </div>
   );

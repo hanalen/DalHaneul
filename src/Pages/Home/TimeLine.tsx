@@ -16,7 +16,7 @@ export interface TimeLineProp {
 function TimeLine(prop: TimeLineProp) {
   const common = useCommon();
   return (
-    <div className="w-60 p-1 h-full">
+    <div className="w-80 p-1 h-full">
       <div className="bg-white border border-slate-300 rounded-lg w-full h-full">
         <div className="px-1 py-2 flex justify-between">
           <div className="flex">

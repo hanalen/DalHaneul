@@ -79,7 +79,7 @@ function PostInput(prop: PropPostInput) {
   return (
     <div className="w-full">
       <textarea
-        className="w-56 p-2 outline-neutral-400 rounded-lg bg-white resize-none mb-1"
+        className="w-full p-2 outline-neutral-400 rounded-lg bg-white resize-none mb-1"
         onChange={OnChangeTextArea}
         value={inputText}
       />
