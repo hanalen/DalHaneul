@@ -34,6 +34,14 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
     setVirtualItems(newVirtualItems);
   };
 
+  const GetCreatedAtTime = (item: AppBskyFeedDefs.FeedViewPost): number => {
+    if (item.reason) {
+      return new Date(item.reason.indexedAt as string).getTime();
+    } else {
+      return new Date((item.post.record as Record).createdAt).getTime();
+    }
+  };
+
   const OnChangeItems = (items: AppBskyFeedDefs.FeedViewPost[]) => {
     const newVirtualItems = [...virtualItems];
     for (const item of items) {
@@ -44,16 +52,14 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
       keys.add(post.cid);
 
       const newItem = { item: item, height: prop.minHeight };
-      const newRecord = post.record as Record;
-      const newTime = new Date(newRecord.createdAt).getTime();
+      const newTime = GetCreatedAtTime(item);
       let isAdded = false;
       for (let i = 0; i < newVirtualItems.length; i++) {
-        const item = newVirtualItems[i];
-        const record = item.item.post.record as Record;
-        const currentTime = new Date(record.createdAt).getTime();
+        const current = newVirtualItems[i];
+        const currentTime = GetCreatedAtTime(current.item);
+
         if (newTime > currentTime) {
           newVirtualItems.splice(i, 0, newItem);
-          setVirtualItems(newVirtualItems);
           isAdded = true;
           break;
         }
