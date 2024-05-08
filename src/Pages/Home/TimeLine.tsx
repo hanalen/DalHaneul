@@ -68,7 +68,7 @@ function TimeLine(prop: TimeLineProp) {
           </div>
           <div className="p-2">버튼</div>
         </div>
-        <VirtualScrollPanel items={feeds} minHeight={0} maxItemCount={1000} />
+        <VirtualScrollPanel items={feeds} minHeight={40} maxItemCount={1000} />
       </div>
     </div>
   );

@@ -19,18 +19,34 @@ export interface VirtualScrollPanelProp {
 
 export interface VirtualScrollItemData {
   item: AppBskyFeedDefs.FeedViewPost;
+  scrollTop: number;
   height: number;
 }
 
 function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
   const scrollHeight = useRef(0);
   const [virtualItems, setVirtualItems] = useState<VirtualScrollItemData[]>([]);
+  const [renderItems, setRenderItems] = useState<VirtualScrollItemData[]>([]);
+  const [updateTime, setUpdateTime] = useState<number>(0);
+  const refScrollPanel = useRef<HTMLDivElement>(null);
+  const [styleVirtualPanel, setStyleVirtualPanel] =
+    useState<React.CSSProperties>({});
   const setKeys = useRef(new Set<string>());
 
-  const OnChangeChildHeight = (index: number, changeHeight: number) => {
-    scrollHeight.current += changeHeight;
+  const OnChangeChildHeight = (key: string, height: number) => {
     const newVirtualItems = [...virtualItems];
-    newVirtualItems[index].height += changeHeight;
+    const index = newVirtualItems.findIndex(
+      (item) => item.item.post.cid === key
+    );
+    if (index === -1) return;
+    newVirtualItems[index].height = height;
+    let total =
+      newVirtualItems[index].scrollTop + newVirtualItems[index].height;
+    for (let i = index + 1; i < newVirtualItems.length; i++) {
+      newVirtualItems[i].scrollTop = total;
+      total += newVirtualItems[i].height;
+    }
+    setUpdateTime(new Date().getTime());
     setVirtualItems(newVirtualItems);
   };
 
@@ -51,7 +67,12 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
       if (keys.has(post.cid)) continue;
       keys.add(post.cid);
 
-      const newItem = { item: item, height: prop.minHeight };
+      const newItem = {
+        item: item,
+        height: prop.minHeight,
+        scrollTop: 0,
+        key: item.post.cid,
+      };
       const newTime = GetCreatedAtTime(item);
       let isAdded = false;
       for (let i = 0; i < newVirtualItems.length; i++) {
@@ -68,7 +89,56 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
         newVirtualItems.push(newItem);
       }
     }
+    for (let i = 0; i < newVirtualItems.length; i++) {
+      const item = newVirtualItems[i];
+      if (i === 0) {
+        item.scrollTop = 0;
+      } else {
+        const prevItem = newVirtualItems[i - 1];
+        newVirtualItems[i].scrollTop = prevItem.scrollTop + prevItem.height;
+      }
+    }
     setVirtualItems(newVirtualItems);
+    setUpdateTime(new Date().getTime());
+  };
+
+  const UpdateVirtualScrollPanel = () => {
+    if (refScrollPanel.current === null) return;
+    const lastVirtualItem = virtualItems[virtualItems.length - 1];
+    if (lastVirtualItem) {
+      scrollHeight.current = lastVirtualItem.scrollTop + lastVirtualItem.height;
+    }
+    setStyleVirtualPanel({ height: `${scrollHeight.current}px` });
+  };
+
+  const UpdateRenderItems = () => {
+    if (refScrollPanel.current === null) return;
+    const scrollTop = refScrollPanel.current.scrollTop;
+    const scrollBottom = scrollTop + refScrollPanel.current.clientHeight;
+    let startIndex = 0;
+    let endIndex = 0;
+    for (let i = 0; i < virtualItems.length; i++) {
+      const item = virtualItems[i];
+      const top = item.scrollTop;
+      const bottom = top + item.height;
+      if (top <= scrollTop && scrollTop <= bottom) {
+        startIndex = i - 3;
+        if (startIndex < 0) {
+          startIndex = 0;
+        }
+      }
+      if (top <= scrollBottom && scrollBottom <= bottom) {
+        endIndex = i;
+        break;
+      }
+    }
+    console.log(startIndex, endIndex);
+    const newRenderItems = virtualItems.slice(startIndex, endIndex + 3);
+    setRenderItems(newRenderItems);
+  };
+
+  const OnScroll = () => {
+    UpdateRenderItems();
   };
 
   useEffect(() => {
@@ -76,22 +146,29 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
   }, [prop.items]);
 
   useEffect(() => {
-    console.log('scrollHeight', scrollHeight);
-  }, [scrollHeight]);
+    UpdateVirtualScrollPanel();
+    UpdateRenderItems();
+  }, [updateTime]);
 
   return (
-    <div className="virtual-scroll-panel">
-      {virtualItems.map((item, index) => {
-        return (
-          <VirtualScrollItem
-            key={index}
-            item={item.item}
-            index={index}
-            height={item.height}
-            onChangeHeight={OnChangeChildHeight}
-          />
-        );
-      })}
+    <div
+      className="overflow-y-auto h-full"
+      ref={refScrollPanel}
+      onScroll={OnScroll}
+    >
+      <div className="virtual-scroll-panel relative" style={styleVirtualPanel}>
+        {renderItems.map((item, index) => {
+          return (
+            <VirtualScrollItem
+              key={index}
+              item={item.item}
+              height={item.height}
+              scrollTop={item.scrollTop}
+              onChangeHeight={OnChangeChildHeight}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

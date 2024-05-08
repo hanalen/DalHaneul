@@ -11,21 +11,35 @@ import { RootState } from '../../store/Store';
 import PostItem from '../Home/PostItem';
 
 export interface VirtualScrollItemProp {
-  onChangeHeight: (index: number, changeHeight: number) => void;
-  index: number;
+  onChangeHeight: (key: string, changeHeight: number) => void;
   height: number;
+  scrollTop: number;
   item: AppBskyFeedDefs.FeedViewPost;
 }
 
 function VirtualScrollItem(prop: VirtualScrollItemProp) {
+  const [style, setStyle] = useState<React.CSSProperties>({});
   const childrenRef = useRef<HTMLDivElement>(null);
+  const prevHeight = useRef<number>(0);
+
   useEffect(() => {
+    setStyle({
+      transform: `translateY(${prop.scrollTop}px)`,
+    });
+  }, [prop.scrollTop]);
+
+  useEffect(() => {
+    prevHeight.current = prop.height;
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { height } = entry.contentRect;
+        //높이 변경이 없을 경우
+        if (height === 0) return;
         if (prop.onChangeHeight) {
-          prop.onChangeHeight(prop.index, height - prop.height);
+          // const changeHeight = height - prevHeight.current;
+          prop.onChangeHeight(prop.item.post.cid, height);
         }
+        prevHeight.current = height;
       }
     });
 
@@ -41,7 +55,14 @@ function VirtualScrollItem(prop: VirtualScrollItemProp) {
   }, []);
 
   return (
-    <div className="virtual-scroll-item" ref={childrenRef}>
+    <div
+      className="virtual-scroll-item absolute left-0 top-0 w-full"
+      ref={childrenRef}
+      style={style}
+    >
+      <div>
+        {prop.scrollTop} / {prop.height}
+      </div>
       <PostItem feed={prop.item} />
     </div>
   );
