@@ -50,7 +50,7 @@ function TimeLine(prop: TimeLineProp) {
 
   return (
     <div className="w-full p-1 h-full">
-      <div className="bg-white border border-slate-300 rounded-lg w-full h-full">
+      <div className="bg-white border border-slate-300 rounded-lg w-full h-full flex flex-col">
         <div className="px-1 py-2 flex justify-between">
           <div className="flex">
             <div className="">
