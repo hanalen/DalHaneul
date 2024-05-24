@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AppBskyActorDefs, AppBskyFeedDefs, BskyAgent } from '@atproto/api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -10,6 +10,10 @@ import { useCommon } from '../../Providers/CommonProvider';
 import { SvgIcon, Icon, IconButton, Box } from '@mui/material';
 import { RootState } from '../../store/Store';
 import { Record } from '@/Interfaces/Record';
+import {
+  EDialogType,
+  useGlobalDialog,
+} from '../../Dialogs/GlobalDialogProvider';
 
 export interface TimeLineProp {
   feed: AppBskyFeedDefs.FeedViewPost;
@@ -18,6 +22,36 @@ export interface TimeLineProp {
 function PostItem(prop: TimeLineProp) {
   const [record, setRecord] = useState<Record>();
   const [author, setAuthor] = useState<AppBskyActorDefs.ProfileViewBasic>();
+  const { agent } = useSelector((state: RootState) => state.userState);
+
+  const dialog = useGlobalDialog();
+
+  const RequestRepost = useCallback(async () => {
+    const { uri, cid } = { ...prop.feed.post };
+    try {
+      const result = await agent.repost(uri, cid);
+      console.log(result);
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  const ConfirmReply = useCallback(() => {
+    console.log('on confirm');
+  }, []);
+
+  const OnClickRepost = useCallback(() => {
+    dialog.OpenDialog({
+      content: '리포스트 하시겠습니까?',
+      title: '알림',
+      onConfirm: () => RequestRepost,
+      type: EDialogType.CONFIRM,
+    });
+  }, []);
+
+  const OnClickReply = useCallback(() => {
+    //
+  }, []);
 
   useEffect(() => {
     // record가 {} 타입이라 새로 타입 정의하여 사용
@@ -41,7 +75,7 @@ function PostItem(prop: TimeLineProp) {
           <div>{record?.text}</div>
           <div className="text-sm flex justify-between w-full grow">
             {/* 카운터영역 */}
-            <button className="mr-1">
+            <button className="mr-1" onClick={OnClickReply}>
               <div className="flex justify-center">
                 <div className="flex flex-col justify-center">
                   <Icon fontSize="inherit" className="mr-1">
@@ -51,7 +85,7 @@ function PostItem(prop: TimeLineProp) {
                 <span>{prop.feed.post.replyCount}</span>
               </div>
             </button>
-            <button className="mr-1">
+            <button className="mr-1" onClick={OnClickRepost}>
               <div className="flex justify-center">
                 <div className="flex flex-col justify-center">
                   <Icon fontSize="inherit" className="mr-1">

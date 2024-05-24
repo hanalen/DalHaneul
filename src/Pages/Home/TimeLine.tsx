@@ -33,7 +33,7 @@ function TimeLine(prop: TimeLineProp) {
       console.log(response);
       setFeeds(response.data.feed);
     } catch (e) {
-      //
+      console.log(e);
     }
   };
 
