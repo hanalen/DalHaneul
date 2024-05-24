@@ -25,16 +25,46 @@ function PostItem(prop: TimeLineProp) {
     setAuthor(prop.feed.post.author);
   }, []);
   return (
-    <div>
-      <div className="w-full flex p-1">
-        <div>{/* 프로필사진 영역 */}</div>
-        <div>
+    <div className="p-1">
+      <div className="w-full flex">
+        <div className="shrink-0 p-1">
+          {/* 프로필사진 영역 */}
+          <img
+            src={author?.avatar}
+            alt="profile"
+            className="w-10 h-10 rounded"
+          />
+        </div>
+        <div className="flex flex-col">
           {/* 텍스트영역 */}
-          <div>{author?.displayName}</div>
+          <div>{`${author?.displayName} / ${author?.handle}`}</div>
           <div>{record?.text}</div>
+          <div className="text-sm flex justify-between w-full grow">
+            {/* 카운터영역 */}
+            <button className="mr-1">
+              <div className="flex justify-center">
+                <div className="flex flex-col justify-center">
+                  <Icon fontSize="inherit" className="mr-1">
+                    reply
+                  </Icon>
+                </div>
+                <span>{prop.feed.post.replyCount}</span>
+              </div>
+            </button>
+            <button className="mr-1">
+              <div className="flex justify-center">
+                <div className="flex flex-col justify-center">
+                  <Icon fontSize="inherit" className="mr-1">
+                    sync alt
+                  </Icon>
+                </div>
+                <span>{prop.feed.post.repostCount}</span>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
-      <div>{/* 카운터영역 */}</div>
+
       <div>{/* 이미지영역 */}</div>
     </div>
   );
