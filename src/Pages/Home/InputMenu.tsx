@@ -70,7 +70,7 @@ function InputMenu() {
     postings.length > 0 && postings[postings.length - 1].text === '';
 
   return (
-    <div className="w-80 p-2 flex flex-col h-full bg-white relative">
+    <div className="w-80 p-2 flex flex-col h-full bg-white relative shrink-0">
       <div className="border p-2 min-h-full overflow-y-auto border-gray-400 rounded-lg">
         <div className="flex justify-between mb-2">
           <div></div>

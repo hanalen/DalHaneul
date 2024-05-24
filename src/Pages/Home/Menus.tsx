@@ -25,7 +25,7 @@ function Menus() {
   }, [agent.session]);
 
   return (
-    <div className="flex flex-col h-screen w-10 bg-slate-200">
+    <div className="flex flex-col h-screen w-10 bg-slate-200 shrink-0">
       <div className="w-8 h-8 m-1">
         {avatar && (
           <img

@@ -19,6 +19,7 @@ export interface TimeLineProp {
 function TimeLine(prop: TimeLineProp) {
   const common = useCommon();
   const [feeds, setFeeds] = useState<AppBskyFeedDefs.FeedViewPost[]>([]);
+  const [style, setStyle] = useState<React.CSSProperties>({});
 
   const { agent } = useSelector((state: RootState) => state.userState);
 
@@ -46,10 +47,11 @@ function TimeLine(prop: TimeLineProp) {
 
   useEffect(() => {
     GetPosts();
+    setStyle({ width: `${prop.tab.width}px` });
   }, []);
 
   return (
-    <div className="w-full p-1 h-full">
+    <div className="p-1 h-full grow-0 shrink-0" style={style}>
       <div className="bg-white border border-slate-300 rounded-lg w-full h-full flex flex-col">
         <div className="px-1 py-2 flex justify-between">
           <div className="flex">
