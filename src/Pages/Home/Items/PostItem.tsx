@@ -5,15 +5,15 @@ import { useNavigate } from 'react-router';
 import { ETabType, TabInfo, uiSlice } from '@/store/UISlice';
 import HomeIcon from '@mui/icons-material/Home';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import MenuIcon from './MenuIcon';
-import { useCommon } from '../../Providers/CommonProvider';
+import MenuIcon from '../MenuIcon';
+import { useCommon } from '../../../Providers/CommonProvider';
 import { SvgIcon, Icon, IconButton, Box } from '@mui/material';
-import { RootState } from '../../store/Store';
+import { RootState } from '../../../store/Store';
 import { Record } from '@/Interfaces/Record';
 import {
   EDialogType,
   useGlobalDialog,
-} from '../../Dialogs/GlobalDialogProvider';
+} from '../../../Dialogs/GlobalDialogProvider';
 
 export interface TimeLineProp {
   feed: AppBskyFeedDefs.FeedViewPost;
