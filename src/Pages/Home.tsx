@@ -12,6 +12,7 @@ import PostInput from './Home/PostInput';
 import TimeLine from './Home/TimeLine';
 import { useCommon } from '../Providers/CommonProvider';
 import InputMenu from './Home/InputMenu';
+import Tab from './Home/Tab';
 
 function Home() {
   const common = useCommon();
@@ -33,7 +34,7 @@ function Home() {
       <Menus />
       <InputMenu />
       {tabs.map((tab, index) => {
-        return <TimeLine tab={tab} key={index} />;
+        return <Tab tab={tab} key={index} />;
       })}
     </div>
   );
