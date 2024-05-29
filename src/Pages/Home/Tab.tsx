@@ -53,8 +53,11 @@ function Tab(prop: TimeLineProp) {
 
     for (const notification of notifications) {
       const post = posts.find((x) => x.uri === notification.uri);
-      if (!post) continue;
-      feeds.push({ post: post });
+      if (post) {
+        feeds.push({ post: post });
+      } else {
+        feeds.push({ post: notification });
+      }
     }
 
     return feeds;

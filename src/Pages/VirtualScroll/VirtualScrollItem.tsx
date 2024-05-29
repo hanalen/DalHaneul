@@ -8,7 +8,8 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useCommon } from '../../Providers/CommonProvider';
 import { SvgIcon, Icon, IconButton, Box } from '@mui/material';
 import { RootState } from '../../store/Store';
-import PostItem from '../Home/PostItem';
+import PostItem from '../Home/Items/PostItem';
+import FeedItem from '../Home/Items/FeedItem';
 
 export interface VirtualScrollItemProp {
   onChangeHeight: (key: string, changeHeight: number) => void;
@@ -63,7 +64,7 @@ function VirtualScrollItem(prop: VirtualScrollItemProp) {
       <div>
         {prop.scrollTop} / {prop.height}
       </div>
-      <PostItem feed={prop.item} />
+      <FeedItem feed={prop.item} />
     </div>
   );
 }
