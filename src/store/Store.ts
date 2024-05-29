@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import uiReducer from './UISlice';
 import userSlice from './UserSlice';
 import postReducer from './PostSlice';
+import feedReducer from './FeedSlice';
 
 export const store = configureStore({
   reducer: {
     userState: userSlice,
     uiState: uiReducer,
     postState: postReducer,
+    feedState: feedReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
