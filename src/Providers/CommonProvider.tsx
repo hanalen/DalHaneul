@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { RootState, store } from '../store/Store';
 import React, { createContext, useContext, ReactNode, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { ETabType, Tab, uiSlice } from '../store/UISlice';
+import { ETabType, TabInfo, uiSlice } from '../store/UISlice';
 import { OutputSchema } from '@atproto/api/dist/client/types/com/atproto/server/createSession';
 import { userSlice } from '../store/UserSlice';
 import { AtpSessionData } from '@atproto/api';
@@ -14,8 +14,8 @@ interface CommonContextProps {
   GetTabName: (tabType: ETabType) => string;
   GetIconName: (tabType: ETabType) => string;
   CreateDefaultMenus: (session: AtpSessionData) => void;
-  SaveTabs: (tabs: Tab[]) => void;
-  LoadTabs: () => Tab[];
+  SaveTabs: (tabs: TabInfo[]) => void;
+  LoadTabs: () => TabInfo[];
 }
 
 const CommonContext = createContext<CommonContextProps | undefined>(undefined);
@@ -62,7 +62,7 @@ export const CommonProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const CreateDefaultMenus = (session: AtpSessionData | undefined) => {
-    const tabs: Tab[] = [];
+    const tabs: TabInfo[] = [];
     if (session) {
       tabs.push({
         did: session.did,
@@ -104,7 +104,7 @@ export const CommonProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const SaveTabs = (tabs: Tab[]) => {
+  const SaveTabs = (tabs: TabInfo[]) => {
     localStorage.setItem('tabs', JSON.stringify(tabs));
   };
 
@@ -112,7 +112,7 @@ export const CommonProvider: React.FC<{ children: ReactNode }> = ({
     const jsonTabs = localStorage.getItem('tabs');
     if (jsonTabs) {
       try {
-        const tabs = JSON.parse(jsonTabs) as Tab[];
+        const tabs = JSON.parse(jsonTabs) as TabInfo[];
         store.dispatch(uiSlice.actions.setTabs(tabs));
         return tabs;
       } catch (e) {

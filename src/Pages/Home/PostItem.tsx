@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { AppBskyActorDefs, AppBskyFeedDefs, BskyAgent } from '@atproto/api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { ETabType, Tab, uiSlice } from '@/store/UISlice';
+import { ETabType, TabInfo, uiSlice } from '@/store/UISlice';
 import HomeIcon from '@mui/icons-material/Home';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import MenuIcon from './MenuIcon';

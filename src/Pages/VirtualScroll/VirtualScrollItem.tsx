@@ -2,7 +2,7 @@ import React, { createRef, useEffect, useRef, useState } from 'react';
 import { AppBskyFeedDefs, BskyAgent } from '@atproto/api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { ETabType, Tab, uiSlice } from '../../store/UISlice';
+import { ETabType, TabInfo, uiSlice } from '../../store/UISlice';
 import HomeIcon from '@mui/icons-material/Home';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useCommon } from '../../Providers/CommonProvider';

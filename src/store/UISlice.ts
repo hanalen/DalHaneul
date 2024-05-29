@@ -10,7 +10,7 @@ export enum ETabType {
   FAVORITE,
 }
 
-export interface Tab {
+export interface TabInfo {
   /**
    * 계정 고유 ID
    */
@@ -30,7 +30,7 @@ export interface Tab {
 }
 
 export type UIState = {
-  tabs: Tab[];
+  tabs: TabInfo[];
 };
 
 const initialState: UIState = {
@@ -41,7 +41,7 @@ export const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
-    setTabs: (state, action: PayloadAction<Tab[]>) => {
+    setTabs: (state, action: PayloadAction<TabInfo[]>) => {
       state.tabs = action.payload;
     },
   },
