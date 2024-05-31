@@ -1,3 +1,4 @@
+import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface Posting {
@@ -7,10 +8,12 @@ export interface Posting {
 
 export type PostState = {
   postings: Posting[];
+  replyFeed: FeedViewPost | undefined;
 };
 
 const initialState: PostState = {
   postings: [{ text: '', images: [] }],
+  replyFeed: undefined,
 };
 
 export interface ActionChangePosting {
@@ -44,6 +47,9 @@ export const postSlice = createSlice({
       const { postings } = { ...state };
       const post = postings[action.payload.postIndex];
       post.images.splice(action.payload.imageIndex, 1);
+    },
+    setReplyFeed: (state, action: PayloadAction<FeedViewPost | undefined>) => {
+      state.replyFeed = action.payload;
     },
   },
 });

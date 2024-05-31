@@ -8,12 +8,13 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import MenuIcon from '../MenuIcon';
 import { useCommon } from '../../../Providers/CommonProvider';
 import { SvgIcon, Icon, IconButton, Box } from '@mui/material';
-import { RootState } from '../../../store/Store';
+import { RootState, store } from '../../../store/Store';
 import { Record } from '@/Interfaces/Record';
 import {
   EDialogType,
   useGlobalDialog,
 } from '../../../Dialogs/GlobalDialogProvider';
+import { postSlice } from '../../../store/PostSlice';
 
 export interface TimeLineProp {
   feed: AppBskyFeedDefs.FeedViewPost;
@@ -26,7 +27,6 @@ function PostItem(prop: TimeLineProp) {
 
   const dialog = useGlobalDialog();
 
-  const RequestRepost = useCallback(async () => {
   const RequestRepost = useCallback(async (result: boolean) => {
     if (!result) return;
     const { uri, cid } = { ...prop.feed.post };
@@ -52,7 +52,7 @@ function PostItem(prop: TimeLineProp) {
   }, []);
 
   const OnClickReply = useCallback(() => {
-    //
+    store.dispatch(postSlice.actions.setReplyFeed(prop.feed));
   }, []);
 
   useEffect(() => {

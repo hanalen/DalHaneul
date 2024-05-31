@@ -11,10 +11,13 @@ import { RootState, store } from '../../store/Store';
 import { Response } from '@atproto/api/dist/client/types/com/atproto/admin/deleteAccount';
 import { Image } from '@atproto/api/src/client/types/app/bsky/embed/images';
 import { encode } from 'punycode';
+import PostItem from './Items/PostItem';
 
 function InputMenu() {
   const [isSending, setIsSending] = useState(false);
-  const { postings } = useSelector((state: RootState) => state.postState);
+  const { postings, replyFeed } = useSelector(
+    (state: RootState) => state.postState
+  );
   const { agent } = useSelector((state: RootState) => state.userState);
 
   const OnClickAdd = () => {
@@ -71,7 +74,12 @@ function InputMenu() {
 
   return (
     <div className="w-80 p-2 flex flex-col h-full bg-white relative shrink-0">
-      <div className="border p-2 min-h-full overflow-y-auto border-gray-400 rounded-lg">
+      {replyFeed && (
+        <div className="p-2 text-gray-500">
+          <PostItem feed={replyFeed} />
+        </div>
+      )}
+      <div className="border p-2 grow overflow-y-auto border-gray-400 rounded-lg">
         <div className="flex justify-between mb-2">
           <div></div>
           <button
