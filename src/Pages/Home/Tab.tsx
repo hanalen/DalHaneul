@@ -52,9 +52,17 @@ function Tab(prop: TimeLineProp) {
     const feeds: FeedViewPost[] = [];
 
     for (const notification of notifications) {
-      const post = posts.find((x) => x.uri === notification.uri);
+      const post = posts.find(
+        (x) =>
+          x.uri === notification.uri || x.uri === notification.reasonSubject
+      );
       if (post) {
-        feeds.push({ post: post });
+        if (notification.reason === 'like') {
+          (notification.record as Record).text = (post.record as Record).text;
+          feeds.push({ post: notification });
+        } else {
+          feeds.push({ post: post });
+        }
       } else {
         feeds.push({ post: notification });
       }

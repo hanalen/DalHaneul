@@ -14,6 +14,8 @@ import {
   EDialogType,
   useGlobalDialog,
 } from '../../../Dialogs/GlobalDialogProvider';
+import PostItem from './PostItem';
+import { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
 
 export interface TimeLineProp {
   feed: AppBskyFeedDefs.FeedViewPost;
@@ -41,7 +43,17 @@ function LikeItem(prop: TimeLineProp) {
     setRecord(prop.feed.post.record as Record);
     setAuthor(prop.feed.post.author);
   }, []);
-  return <div className="p-1">likeItem</div>;
+  return (
+    <div className="p-1">
+      <div className="flex">
+        <img src={author?.avatar} className="w-5 h-5 rounded-sm mr-1" />
+        <label>{author?.displayName}님이 좋아합니다.</label>
+      </div>
+      <div className="p-2">
+        <label>{record?.text}</label>
+      </div>
+    </div>
+  );
 }
 
 export default LikeItem;

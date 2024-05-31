@@ -21,7 +21,7 @@ export interface TimeLineProp {
 
 function FollowItem(prop: TimeLineProp) {
   const [record, setRecord] = useState<Record>();
-  const [author, setAuthor] = useState<AppBskyActorDefs.ProfileViewBasic>();
+  const [author, setAuthor] = useState<AppBskyActorDefs.ProfileView>();
   const { agent } = useSelector((state: RootState) => state.userState);
 
   const dialog = useGlobalDialog();
@@ -41,7 +41,31 @@ function FollowItem(prop: TimeLineProp) {
     setRecord(prop.feed.post.record as Record);
     setAuthor(prop.feed.post.author);
   }, []);
-  return <div className="p-1">followItem</div>;
+  return (
+    <div className="p-1">
+      <div className="w-full flex">
+        <div className="shrink-0 p-1">
+          {/* 프로필사진 영역 */}
+          <img
+            src={author?.avatar}
+            alt="profile"
+            className="w-10 h-10 rounded"
+          />
+        </div>
+        <div>
+          <label className="text-base">
+            {`${author?.displayName} / ${author?.handle}`}님이 팔로우했습니다.
+          </label>
+          <br />
+          <label>{author?.description}</label>
+          <br />
+          <button className="py-1 px-2 bg-blue-400 rounded-lg text-white">
+            {author?.viewer?.following ? '언팔로우하기' : '팔로우하기'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default FollowItem;
