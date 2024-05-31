@@ -27,6 +27,8 @@ function PostItem(prop: TimeLineProp) {
   const dialog = useGlobalDialog();
 
   const RequestRepost = useCallback(async () => {
+  const RequestRepost = useCallback(async (result: boolean) => {
+    if (!result) return;
     const { uri, cid } = { ...prop.feed.post };
     try {
       const result = await agent.repost(uri, cid);
