@@ -3,7 +3,7 @@ import { AppBskyActorDefs, AppBskyFeedDefs, BskyAgent } from '@atproto/api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { ETabType, TabInfo, uiSlice } from '@/store/UISlice';
-import HomeIcon from '@mui/icons-material/Home';
+import Favorite from '@mui/icons-material/Favorite';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import MenuIcon from '../MenuIcon';
 import { useCommon } from '../../../Providers/CommonProvider';
@@ -44,13 +44,18 @@ function LikeItem(prop: TimeLineProp) {
     setAuthor(prop.feed.post.author);
   }, []);
   return (
-    <div className="p-1">
-      <div className="flex">
-        <img src={author?.avatar} className="w-5 h-5 rounded-sm mr-1" />
-        <label>{author?.displayName}님이 좋아합니다.</label>
+    <div className="p-2 flex ">
+      <div className="p-1">
+        <Icon className="mr-2 text-red-500">favorite</Icon>
       </div>
-      <div className="p-2">
-        <label>{record?.text}</label>
+      <div>
+        <div className="flex flex-col">
+          <img src={author?.avatar} className="w-7 h-7 rounded-sm mr-1" />
+          <label>{author?.displayName}님이 좋아합니다.</label>
+        </div>
+        <div className="p-2">
+          <label>{record?.text}</label>
+        </div>
       </div>
     </div>
   );
