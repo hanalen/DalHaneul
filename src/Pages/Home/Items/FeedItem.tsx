@@ -21,7 +21,7 @@ function FeedItem(prop: TimeLineProp) {
     } else if (record.$type === ERecordType.like) {
       setDrawElement(<LikeItem feed={prop.feed} />);
     }
-  }, []);
+  }, [prop.feed]);
   return <div>{drawElement}</div>;
 }
 

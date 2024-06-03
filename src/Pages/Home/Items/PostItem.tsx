@@ -15,6 +15,7 @@ import {
   useGlobalDialog,
 } from '../../../Dialogs/GlobalDialogProvider';
 import { postSlice } from '../../../store/PostSlice';
+import { feedSlice } from '../../../store/FeedSlice';
 
 export interface TimeLineProp {
   feed: AppBskyFeedDefs.FeedViewPost;
@@ -27,12 +28,35 @@ function PostItem(prop: TimeLineProp) {
 
   const dialog = useGlobalDialog();
 
-  const RequestRepost = useCallback(async (result: boolean) => {
+  const ConfirmRepost = useCallback(async (result: boolean) => {
     if (!result) return;
+    if (!(await RequestRepost())) return;
+    const post = await RequestPost();
+    if (!post) return;
+
+    if (post.posts.length !== 1) return;
+
+    const updatedPost = post.posts[0];
+    store.dispatch(feedSlice.actions.updateFeed({ post: updatedPost }));
+  }, []);
+
+  const RequestPost = useCallback(async () => {
+    try {
+      const post = await agent.getPosts({
+        uris: [prop.feed.post.uri],
+      });
+      return post.data;
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  const RequestRepost = useCallback(async () => {
     const { uri, cid } = { ...prop.feed.post };
     try {
       const result = await agent.repost(uri, cid);
       console.log(result);
+      return result;
     } catch (e) {
       console.log(e);
     }
@@ -46,7 +70,7 @@ function PostItem(prop: TimeLineProp) {
     dialog.OpenDialog({
       content: '리포스트 하시겠습니까?',
       title: '알림',
-      onConfirm: () => RequestRepost,
+      onConfirm: () => ConfirmRepost,
       type: EDialogType.CONFIRM,
     });
   }, []);

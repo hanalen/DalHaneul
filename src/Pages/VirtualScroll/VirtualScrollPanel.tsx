@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { AppBskyFeedDefs } from '@atproto/api';
 import VirtualScrollItem from './VirtualScrollItem';
 import { Record } from '@/Interfaces/Record';
+import { useSelector } from 'react-redux';
+import { RootState, store } from '../../store/Store';
+import { feedSlice } from '../../store/FeedSlice';
 
 export interface VirtualScrollPanelProp {
   minHeight: number;
@@ -23,6 +26,28 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
   const [styleVirtualPanel, setStyleVirtualPanel] =
     useState<React.CSSProperties>({});
   const setKeys = useRef(new Set<string>());
+
+  const { updatedFeeds } = useSelector((state: RootState) => state.feedState);
+  /**
+   * 업데이트 된 피드를 가상 스크롤 prop에 적용
+   */
+  const UpdateFeed = useCallback(() => {
+    for (const feed of updatedFeeds) {
+      const virtualItem = virtualItems.find(
+        (item) => item.item.post.uri === feed.post.uri
+      );
+      if (virtualItem) {
+        virtualItem.item = feed;
+      }
+      const renderItem = renderItems.find(
+        (item) => item.item.post.uri === feed.post.uri
+      );
+      if (renderItem) {
+        renderItem.item = feed;
+      }
+      store.dispatch(feedSlice.actions.removeUpdateFeed(feed));
+    }
+  }, [updatedFeeds, virtualItems, renderItems]);
 
   const OnChangeChildHeight = useCallback((key: string, height: number) => {
     setVirtualItems((prevItems) => {
@@ -140,6 +165,10 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
   useEffect(() => {
     OnChangeItems(prop.items);
   }, [prop.items, OnChangeItems]);
+
+  useEffect(() => {
+    UpdateFeed();
+  }, [updatedFeeds]);
 
   useEffect(() => {
     UpdateVirtualScrollPanel();
