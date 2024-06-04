@@ -13,6 +13,7 @@ import {
 import { Notification } from '@atproto/api/dist/client/types/app/bsky/notification/listNotifications';
 import { Record } from '@/Interfaces/Record';
 import { FeedData, feedSlice } from '../../store/FeedSlice';
+import ProfileTab from './ProfileTab';
 
 export interface TimeLineProp {
   tab: TabInfo;
@@ -165,30 +166,57 @@ function Tab(prop: TimeLineProp) {
     setStyle({ width: `${prop.tab.width}px` });
   }, []);
 
-  return (
-    <div className="p-1 h-full grow-0 shrink-0" style={style}>
-      <div className="bg-white border border-slate-300 rounded-lg w-full h-full flex flex-col">
-        <div className="px-1 py-2 flex justify-between">
-          <div className="flex">
-            <div className="">
-              <SvgIcon component={DragIndicatorIcon} color="disabled" />
-            </div>
-            <div>
-              <div className="flex items-center">
-                <Icon>{common.GetIconName(prop.tab.tabType)}</Icon>
-                <label className="ml-2">
-                  {common.GetTabName(prop.tab.tabType)}
-                </label>
+  if (prop.tab.tabType === ETabType.PROFILE) {
+    return (
+      <div className="p-1 h-full grow-0 shrink-0" style={style}>
+        <div className="bg-white border border-slate-300 rounded-lg w-full h-full flex flex-col">
+          <div className="px-1 py-2 flex justify-between">
+            <div className="flex">
+              <div className="">
+                <SvgIcon component={DragIndicatorIcon} color="disabled" />
               </div>
-              <label>{prop.tab.handle}</label>
+              <div>
+                <div className="flex items-center">
+                  <Icon>{common.GetIconName(prop.tab.tabType)}</Icon>
+                  <label className="ml-2">
+                    {common.GetTabName(prop.tab.tabType)}
+                  </label>
+                </div>
+                <label>{prop.tab.handle}</label>
+              </div>
             </div>
+            <div className="p-2">버튼</div>
           </div>
-          <div className="p-2">버튼</div>
+          <ProfileTab userHandle={prop.tab.profileData?.handle} />
         </div>
-        <TimeLine posts={GetFeed()} />
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div className="p-1 h-full grow-0 shrink-0" style={style}>
+        <div className="bg-white border border-slate-300 rounded-lg w-full h-full flex flex-col">
+          <div className="px-1 py-2 flex justify-between">
+            <div className="flex">
+              <div className="">
+                <SvgIcon component={DragIndicatorIcon} color="disabled" />
+              </div>
+              <div>
+                <div className="flex items-center">
+                  <Icon>{common.GetIconName(prop.tab.tabType)}</Icon>
+                  <label className="ml-2">
+                    {common.GetTabName(prop.tab.tabType)}
+                  </label>
+                </div>
+                <label>{prop.tab.handle}</label>
+              </div>
+            </div>
+            <div className="p-2">버튼</div>
+          </div>
+          <TimeLine posts={GetFeed()} />
+        </div>
+      </div>
+    );
+  }
 }
 
 export default Tab;

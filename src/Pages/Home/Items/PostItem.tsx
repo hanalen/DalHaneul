@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { AppBskyActorDefs, AppBskyFeedDefs, BskyAgent } from '@atproto/api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { ETabType, TabInfo, uiSlice } from '@/store/UISlice';
+import { ETabType, TabInfo, uiSlice } from '../../../store/UISlice';
 import HomeIcon from '@mui/icons-material/Home';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import MenuIcon from '../MenuIcon';
@@ -17,13 +17,13 @@ import {
 import { postSlice } from '../../../store/PostSlice';
 import { feedSlice } from '../../../store/FeedSlice';
 
-export interface TimeLineProp {
+export interface PostItemProp {
   isShowBottom: boolean;
   feed: AppBskyFeedDefs.FeedViewPost;
   post: AppBskyFeedDefs.PostView;
 }
 
-function PostItem(prop: TimeLineProp) {
+function PostItem(prop: PostItemProp) {
   const [record, setRecord] = useState<Record>();
   const [author, setAuthor] = useState<AppBskyActorDefs.ProfileViewBasic>();
   const [classRepost, setClassRepost] = useState<string>('');
@@ -31,6 +31,19 @@ function PostItem(prop: TimeLineProp) {
   const { agent } = useSelector((state: RootState) => state.userState);
 
   const dialog = useGlobalDialog();
+
+  const OnClickAvatar = useCallback(() => {
+    if (!author) return;
+    store.dispatch(
+      uiSlice.actions.addTab({
+        tabType: ETabType.PROFILE,
+        width: 450,
+        did: author.did,
+        handle: agent.session?.handle || '',
+        profileData: author,
+      })
+    );
+  }, [author]);
 
   useEffect(() => {
     if (!prop.post) return;
@@ -124,7 +137,7 @@ function PostItem(prop: TimeLineProp) {
   return (
     <div className="p-1">
       <div className="w-full flex">
-        <div className="shrink-0 p-1">
+        <div className="shrink-0 p-1 cursor-pointer" onClick={OnClickAvatar}>
           {/* 프로필사진 영역 */}
           <img
             src={author?.avatar}

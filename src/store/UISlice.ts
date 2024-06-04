@@ -1,3 +1,7 @@
+import {
+  ProfileViewBasic,
+  ProfileViewDetailed,
+} from '@atproto/api/dist/client/types/app/bsky/actor/defs';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export enum ETabType {
@@ -27,6 +31,10 @@ export interface TabInfo {
    * 메뉴 너비
    */
   width: number;
+  /**
+   * ProfileData
+   */
+  profileData?: ProfileViewBasic;
 }
 
 export type UIState = {
@@ -43,6 +51,9 @@ export const uiSlice = createSlice({
   reducers: {
     setTabs: (state, action: PayloadAction<TabInfo[]>) => {
       state.tabs = action.payload;
+    },
+    addTab(state, action: PayloadAction<TabInfo>) {
+      state.tabs.push(action.payload);
     },
   },
 });

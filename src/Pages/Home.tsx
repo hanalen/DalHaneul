@@ -33,9 +33,11 @@ function Home() {
     <div className="w-screen h-screen flex">
       <Menus />
       <InputMenu />
-      {tabs.map((tab, index) => {
-        return <Tab tab={tab} key={index} />;
-      })}
+      <div className="flex w-full overflow-x-auto">
+        {tabs.map((tab, index) => {
+          return <Tab tab={tab} key={index} />;
+        })}
+      </div>
     </div>
   );
 }
