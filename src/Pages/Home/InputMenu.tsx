@@ -1,5 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { BskyAgent, ComAtprotoRepoUploadBlob } from '@atproto/api';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  AppBskyFeedPost,
+  BskyAgent,
+  ComAtprotoRepoUploadBlob,
+} from '@atproto/api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { uiSlice } from '@/store/UISlice';
@@ -12,6 +16,7 @@ import { Response } from '@atproto/api/dist/client/types/com/atproto/admin/delet
 import { Image } from '@atproto/api/src/client/types/app/bsky/embed/images';
 import { encode } from 'punycode';
 import PostItem from './Items/PostItem';
+import { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
 
 function InputMenu() {
   const [isSending, setIsSending] = useState(false);
@@ -47,6 +52,17 @@ function InputMenu() {
 
   const OnClickSend = async () => {
     setIsSending(true);
+    let isSuccess = true;
+
+    //포스트 보내기 전 root포스트와 부모 포스트를 설정
+    let root: PostView | undefined;
+    let parent: PostView | undefined;
+    if (replyFeed) {
+      root =
+        (replyFeed.reply?.root as PostView) ?? (replyFeed.post as PostView);
+      parent = replyFeed.post;
+    }
+
     for (const posting of postings) {
       const images: Image[] = [];
       const promises: Promise<ComAtprotoRepoUploadBlob.Response>[] = [];
@@ -60,11 +76,32 @@ function InputMenu() {
       for (const result of results) {
         images.push({ image: result.data.blob, alt: '' });
       }
-
-      await agent.post({
-        text: posting.text,
-        embed: { $type: 'app.bsky.embed.images', images: images },
-      });
+      try {
+        const record: AppBskyFeedPost.Record = {
+          text: posting.text,
+          embed: { $type: 'app.bsky.embed.images', images: images },
+          createdAt: new Date().toISOString(),
+        };
+        if (root && parent) {
+          console.log('set root and parent');
+          record.reply = { root: root, parent: parent };
+        }
+        console.log('-----');
+        console.log('root:', root);
+        console.log('parent:', parent);
+        const result = await agent.post(record);
+        parent = { uri: result.uri, cid: result.cid } as PostView;
+        if (!root) {
+          //스레드 첫글을 등록했을 경우 root를 설정
+          root = { uri: result.uri, cid: result.cid } as PostView;
+        }
+      } catch (e) {
+        console.log(e);
+        isSuccess = false;
+      }
+    }
+    if (isSuccess) {
+      store.dispatch(postSlice.actions.clear());
     }
     setIsSending(false);
   };

@@ -51,6 +51,10 @@ export const postSlice = createSlice({
     setReplyFeed: (state, action: PayloadAction<FeedViewPost | undefined>) => {
       state.replyFeed = action.payload;
     },
+    clear: (state) => {
+      state.postings = [{ text: '', images: [] }];
+      state.replyFeed = undefined;
+    },
   },
 });
 
