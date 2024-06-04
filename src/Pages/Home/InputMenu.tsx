@@ -113,7 +113,7 @@ function InputMenu() {
     <div className="w-80 p-2 flex flex-col h-full bg-white relative shrink-0">
       {replyFeed && (
         <div className="p-2 text-gray-500">
-          <PostItem feed={replyFeed} />
+          <PostItem feed={replyFeed} post={replyFeed.post} />
         </div>
       )}
       <div className="border p-2 grow overflow-y-auto border-gray-400 rounded-lg">

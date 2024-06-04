@@ -19,6 +19,7 @@ import { feedSlice } from '../../../store/FeedSlice';
 
 export interface TimeLineProp {
   feed: AppBskyFeedDefs.FeedViewPost;
+  post: AppBskyFeedDefs.PostView;
 }
 
 function PostItem(prop: TimeLineProp) {
@@ -31,14 +32,14 @@ function PostItem(prop: TimeLineProp) {
   const dialog = useGlobalDialog();
 
   useEffect(() => {
-    if (!prop.feed) return;
-    setRecord(prop.feed.post.record as Record);
-    setAuthor(prop.feed.post.author);
-    const isRepost = prop.feed.post.viewer?.repost || false;
+    if (!prop.post) return;
+    setRecord(prop.post.record as Record);
+    setAuthor(prop.post.author);
+    const isRepost = prop.post.viewer?.repost || false;
     setClassRepost(isRepost ? 'text-blue-500' : '');
-    const isLike = prop.feed.post.viewer?.like || false;
+    const isLike = prop.post.viewer?.like || false;
     setClassLike(isLike ? 'text-red-500' : '');
-  }, [prop.feed]);
+  }, [prop.post]);
 
   const ConfirmRepost = useCallback(async (result: boolean) => {
     if (!result) return;
@@ -55,7 +56,7 @@ function PostItem(prop: TimeLineProp) {
   const RequestPost = useCallback(async () => {
     try {
       const post = await agent.getPosts({
-        uris: [prop.feed.post.uri],
+        uris: [prop.post.uri],
       });
       return post.data;
     } catch (e) {
@@ -64,7 +65,7 @@ function PostItem(prop: TimeLineProp) {
   }, []);
 
   const RequestRepost = useCallback(async () => {
-    const { uri, cid } = { ...prop.feed.post };
+    const { uri, cid } = { ...prop.post };
     try {
       const result = await agent.repost(uri, cid);
       console.log(result);
@@ -93,8 +94,8 @@ function PostItem(prop: TimeLineProp) {
 
   useEffect(() => {
     // record가 {} 타입이라 새로 타입 정의하여 사용
-    setRecord(prop.feed.post.record as Record);
-    setAuthor(prop.feed.post.author);
+    setRecord(prop.post.record as Record);
+    setAuthor(prop.post.author);
   }, []);
   return (
     <div className="p-1">
@@ -120,7 +121,7 @@ function PostItem(prop: TimeLineProp) {
                     reply
                   </Icon>
                 </div>
-                <span>{prop.feed.post.replyCount}</span>
+                <span>{prop.post.replyCount}</span>
               </div>
             </button>
             <button className="mr-1" onClick={OnClickRepost}>
@@ -130,7 +131,7 @@ function PostItem(prop: TimeLineProp) {
                     favorite
                   </Icon>
                 </div>
-                <span>{prop.feed.post.likeCount}</span>
+                <span>{prop.post.likeCount}</span>
               </div>
             </button>
 
@@ -139,7 +140,7 @@ function PostItem(prop: TimeLineProp) {
                 <div className="flex flex-col justify-center mr-1">
                   <Icon fontSize="inherit">sync alt</Icon>
                 </div>
-                <span>{prop.feed.post.repostCount}</span>
+                <span>{prop.post.repostCount}</span>
               </div>
             </button>
           </div>

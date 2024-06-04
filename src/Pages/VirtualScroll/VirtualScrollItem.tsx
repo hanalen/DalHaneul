@@ -57,7 +57,7 @@ function VirtualScrollItem(prop: VirtualScrollItemProp) {
 
   return (
     <div
-      className="virtual-scroll-item absolute left-0 top-0 w-full"
+      className="virtual-scroll-item absolute left-0 top-0 w-full border-t-2 border-gray-200"
       ref={childrenRef}
       style={style}
     >
