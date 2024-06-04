@@ -24,9 +24,21 @@ export interface TimeLineProp {
 function PostItem(prop: TimeLineProp) {
   const [record, setRecord] = useState<Record>();
   const [author, setAuthor] = useState<AppBskyActorDefs.ProfileViewBasic>();
+  const [classRepost, setClassRepost] = useState<string>('');
+  const [classLike, setClassLike] = useState<string>('');
   const { agent } = useSelector((state: RootState) => state.userState);
 
   const dialog = useGlobalDialog();
+
+  useEffect(() => {
+    if (!prop.feed) return;
+    setRecord(prop.feed.post.record as Record);
+    setAuthor(prop.feed.post.author);
+    const isRepost = prop.feed.post.viewer?.repost || false;
+    setClassRepost(isRepost ? 'text-blue-500' : '');
+    const isLike = prop.feed.post.viewer?.like || false;
+    setClassLike(isLike ? 'text-red-500' : '');
+  }, [prop.feed]);
 
   const ConfirmRepost = useCallback(async (result: boolean) => {
     if (!result) return;
@@ -95,7 +107,7 @@ function PostItem(prop: TimeLineProp) {
             className="w-10 h-10 rounded"
           />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col grow">
           {/* 텍스트영역 */}
           <div>{`${author?.displayName} / ${author?.handle}`}</div>
           <div>{record?.text}</div>
@@ -112,11 +124,20 @@ function PostItem(prop: TimeLineProp) {
               </div>
             </button>
             <button className="mr-1" onClick={OnClickRepost}>
-              <div className="flex justify-center">
-                <div className="flex flex-col justify-center">
-                  <Icon fontSize="inherit" className="mr-1">
-                    sync alt
+              <div className={`flex justify-center ${classLike}`}>
+                <div className="flex flex-col justify-center mr-1">
+                  <Icon fontSize="inherit" className="mr-2 ">
+                    favorite
                   </Icon>
+                </div>
+                <span>{prop.feed.post.likeCount}</span>
+              </div>
+            </button>
+
+            <button className="mr-1" onClick={OnClickRepost}>
+              <div className={`flex justify-center ${classRepost}`}>
+                <div className="flex flex-col justify-center mr-1">
+                  <Icon fontSize="inherit">sync alt</Icon>
                 </div>
                 <span>{prop.feed.post.repostCount}</span>
               </div>
