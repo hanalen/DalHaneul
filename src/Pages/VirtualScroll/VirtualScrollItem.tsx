@@ -61,9 +61,6 @@ function VirtualScrollItem(prop: VirtualScrollItemProp) {
       ref={childrenRef}
       style={style}
     >
-      <div>
-        {prop.scrollTop} / {prop.height}
-      </div>
       <FeedItem feed={prop.item} />
     </div>
   );

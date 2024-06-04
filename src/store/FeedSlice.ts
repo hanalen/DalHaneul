@@ -38,7 +38,6 @@ export const feedSlice = createSlice({
         feed.feeds.splice(index, 1, action.payload);
       }
       state.updatedFeeds.push(action.payload);
-      console.log('updateFeed', JSON.parse(JSON.stringify(state.updatedFeeds)));
     },
     removeUpdateFeed(
       state,
