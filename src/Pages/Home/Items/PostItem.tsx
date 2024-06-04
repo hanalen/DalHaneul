@@ -18,6 +18,7 @@ import { postSlice } from '../../../store/PostSlice';
 import { feedSlice } from '../../../store/FeedSlice';
 
 export interface TimeLineProp {
+  isShowBottom: boolean;
   feed: AppBskyFeedDefs.FeedViewPost;
   post: AppBskyFeedDefs.PostView;
 }
@@ -43,7 +44,13 @@ function PostItem(prop: TimeLineProp) {
 
   const ConfirmRepost = useCallback(async (result: boolean) => {
     if (!result) return;
-    if (!(await RequestRepost())) return;
+    let resultRepost = undefined;
+    if (prop.post.viewer?.repost) {
+      resultRepost = await RequestDeleteRepost();
+    } else {
+      resultRepost = await RequestRepost();
+    }
+    if (!resultRepost) return;
     const post = await RequestPost();
     if (!post) return;
 
@@ -59,6 +66,19 @@ function PostItem(prop: TimeLineProp) {
         uris: [prop.post.uri],
       });
       return post.data;
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  const RequestDeleteRepost = useCallback(async () => {
+    const { repost } = { ...prop.post.viewer };
+    if (!repost) return;
+
+    try {
+      await agent.deleteRepost(repost);
+      //no response
+      return true;
     } catch (e) {
       console.log(e);
     }
@@ -80,13 +100,17 @@ function PostItem(prop: TimeLineProp) {
   }, []);
 
   const OnClickRepost = useCallback(() => {
+    const { post } = { ...prop };
+    const message = post.viewer?.repost
+      ? '리포스트를 취소하시겠습니까?'
+      : '리포스트 하시겠습니까?';
     dialog.OpenDialog({
-      content: '리포스트 하시겠습니까?',
+      content: message,
       title: '알림',
       onConfirm: () => ConfirmRepost,
       type: EDialogType.CONFIRM,
     });
-  }, []);
+  }, [prop.post]);
 
   const OnClickReply = useCallback(() => {
     store.dispatch(postSlice.actions.setReplyFeed(prop.feed));
@@ -112,38 +136,40 @@ function PostItem(prop: TimeLineProp) {
           {/* 텍스트영역 */}
           <div>{`${author?.displayName} / ${author?.handle}`}</div>
           <div>{record?.text}</div>
-          <div className="text-sm flex justify-between w-full grow">
-            {/* 카운터영역 */}
-            <button className="mr-1" onClick={OnClickReply}>
-              <div className="flex justify-center">
-                <div className="flex flex-col justify-center">
-                  <Icon fontSize="inherit" className="mr-1">
-                    reply
-                  </Icon>
+          {prop.isShowBottom && (
+            <div className="text-sm flex justify-between w-full grow">
+              {/* 카운터영역 */}
+              <button className="mr-1" onClick={OnClickReply}>
+                <div className="flex justify-center">
+                  <div className="flex flex-col justify-center">
+                    <Icon fontSize="inherit" className="mr-1">
+                      reply
+                    </Icon>
+                  </div>
+                  <span>{prop.post.replyCount}</span>
                 </div>
-                <span>{prop.post.replyCount}</span>
-              </div>
-            </button>
-            <button className="mr-1" onClick={OnClickRepost}>
-              <div className={`flex justify-center ${classLike}`}>
-                <div className="flex flex-col justify-center mr-1">
-                  <Icon fontSize="inherit" className="mr-2 ">
-                    favorite
-                  </Icon>
+              </button>
+              <button className="mr-1" onClick={OnClickRepost}>
+                <div className={`flex justify-center ${classLike}`}>
+                  <div className="flex flex-col justify-center mr-1">
+                    <Icon fontSize="inherit" className="mr-2 ">
+                      favorite
+                    </Icon>
+                  </div>
+                  <span>{prop.post.likeCount}</span>
                 </div>
-                <span>{prop.post.likeCount}</span>
-              </div>
-            </button>
+              </button>
 
-            <button className="mr-1" onClick={OnClickRepost}>
-              <div className={`flex justify-center ${classRepost}`}>
-                <div className="flex flex-col justify-center mr-1">
-                  <Icon fontSize="inherit">sync alt</Icon>
+              <button className="mr-1" onClick={OnClickRepost}>
+                <div className={`flex justify-center ${classRepost}`}>
+                  <div className="flex flex-col justify-center mr-1">
+                    <Icon fontSize="inherit">sync alt</Icon>
+                  </div>
+                  <span>{prop.post.repostCount}</span>
                 </div>
-                <span>{prop.post.repostCount}</span>
-              </div>
-            </button>
-          </div>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

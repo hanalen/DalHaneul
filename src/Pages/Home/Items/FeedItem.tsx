@@ -22,9 +22,14 @@ function FeedItem(prop: TimeLineProp) {
             <PostItem
               feed={prop.feed}
               post={prop.feed.reply.parent as PostView}
+              isShowBottom={false}
             />
           )}
-          <PostItem feed={prop.feed} post={prop.feed.post} />
+          <PostItem
+            feed={prop.feed}
+            post={prop.feed.post}
+            isShowBottom={true}
+          />
         </div>
       );
     } else if (record.$type === ERecordType.follow) {
@@ -33,7 +38,7 @@ function FeedItem(prop: TimeLineProp) {
       setDrawElement(<LikeItem feed={prop.feed} />);
     }
   }, [prop.feed]);
-  return <div>{drawElement}</div>;
+  return <div className="p-1">{drawElement}</div>;
 }
 
 export default FeedItem;
