@@ -8,7 +8,7 @@ export interface TimeLineProp {
 
 function TimeLine(prop: TimeLineProp) {
   return (
-    <div className="p-1 h-full grow-0 shrink-0">
+    <div className="p-1 h-full grow shrink overflow-hidden">
       <VirtualScrollPanel
         items={prop.posts}
         minHeight={40}
