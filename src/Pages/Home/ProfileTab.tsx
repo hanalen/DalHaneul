@@ -74,7 +74,6 @@ function ProfileTab(prop: ProfileTabProp) {
   }, []);
 
   useEffect(() => {
-    if (!profile) return;
     setTabs([
       {
         name: '포스트',
