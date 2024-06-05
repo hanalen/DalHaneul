@@ -2,6 +2,7 @@ import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/act
 import { RootState } from '../../store/Store';
 import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
 
 export interface ProfileTabProp {
   userHandle: string | undefined;
@@ -26,6 +27,9 @@ function ProfileTab(prop: ProfileTabProp) {
   const [tabs, setTabs] = useState<Tab[]>();
   const [selectedTab, setSelectedTab] = useState<TabType>(TabType.POST);
 
+  const [postCursor, setPostCursor] = useState<string>('');
+  const [posts, setPosts] = useState<FeedViewPost[]>([]);
+
   const GetStyleTab = useCallback(
     (tabType: TabType): CSSProperties => {
       return { display: selectedTab === tabType ? 'block' : 'none' };
@@ -46,8 +50,27 @@ function ProfileTab(prop: ProfileTabProp) {
     }
   }, []);
 
+  const RequestPosts = useCallback(async () => {
+    if (!agent.session) return;
+    try {
+      const response = await agent.getAuthorFeed({
+        actor: prop.userHandle || '',
+        cursor: postCursor,
+        limit: 100,
+      });
+      console.log(response);
+      if (response.data.cursor) {
+        setPostCursor(response.data.cursor);
+      }
+      setPosts(response.data.feed);
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
   useEffect(() => {
     RequestProfile();
+    RequestPosts();
   }, []);
 
   useEffect(() => {
