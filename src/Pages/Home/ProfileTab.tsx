@@ -3,6 +3,7 @@ import { RootState } from '../../store/Store';
 import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
+import Timeline from './TimeLine';
 
 export interface ProfileTabProp {
   userHandle: string | undefined;
@@ -109,7 +110,7 @@ function ProfileTab(prop: ProfileTabProp) {
   if (!profile) return <div></div>;
   else
     return (
-      <div className="p-2">
+      <div className="p-2 shrink grow flex flex-col h-full overflow-hidden">
         <div className="w-full mb-4">
           <img className="rounded-2xl" src={profile.banner} />
         </div>
@@ -140,7 +141,7 @@ function ProfileTab(prop: ProfileTabProp) {
             <div>{profile.description}</div>
           </div>
         </div>
-        <div className="mb-2">
+        <div className="mb-2 h-full grow shrink overflow-hidden flex flex-col">
           <div className="tab flex justify-between mb-2">
             {tabs?.map((tab, index) => {
               return (
@@ -156,8 +157,13 @@ function ProfileTab(prop: ProfileTabProp) {
               );
             })}
           </div>
-          <div>
-            <div style={GetStyleTab(TabType.POST)}>포스트</div>
+          <div className="flex h-full overflow-hidden">
+            <div
+              style={GetStyleTab(TabType.POST)}
+              className="overflow-hidden grow shrink-0"
+            >
+              <Timeline posts={posts} />
+            </div>
             <div style={GetStyleTab(TabType.FOLLOWING)}>팔로잉</div>
             <div style={GetStyleTab(TabType.FOLLOWER)}>팔로워</div>
             <div style={GetStyleTab(TabType.MEDIA)}>미디어</div>
