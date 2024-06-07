@@ -1,9 +1,13 @@
-import { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs';
+import {
+  ProfileView,
+  ProfileViewDetailed,
+} from '@atproto/api/dist/client/types/app/bsky/actor/defs';
 import { RootState } from '../../store/Store';
 import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
 import Timeline from './TimeLine';
+import ProfileUsers from './ProfileUsers';
 
 export interface ProfileTabProp {
   userHandle: string | undefined;
@@ -30,6 +34,14 @@ function ProfileTab(prop: ProfileTabProp) {
 
   const [postCursor, setPostCursor] = useState<string>('');
   const [posts, setPosts] = useState<FeedViewPost[]>([]);
+
+  const [following, setFollowing] = useState<ProfileView[]>([]);
+  const [follower, setFollower] = useState<ProfileView[]>([]);
+  const [followingCursor, setFollowingCursor] = useState<string>('');
+  const [followerCursor, setFollowerCursor] = useState<string>('');
+
+  const [mediaPosts, setMediaPosts] = useState<FeedViewPost[]>([]);
+  const [mediaCursor, setMediaCursor] = useState<string>('');
 
   const GetStyleTab = useCallback(
     (tabType: TabType): CSSProperties => {
@@ -69,9 +81,33 @@ function ProfileTab(prop: ProfileTabProp) {
     }
   }, []);
 
+  const RequestFollowing = useCallback(async () => {
+    try {
+      const result = await agent.getFollows({ actor: prop.userHandle || '' });
+      console.log(result);
+      setFollowing(result.data.follows);
+      setFollowingCursor(result.data.cursor || '');
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  const RequestFollower = useCallback(async () => {
+    try {
+      const result = await agent.getFollowers({ actor: prop.userHandle || '' });
+      console.log(result);
+      setFollower(result.data.followers);
+      setFollowerCursor(result.data.cursor || '');
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
   useEffect(() => {
     RequestProfile();
     RequestPosts();
+    RequestFollowing();
+    RequestFollower();
   }, []);
 
   useEffect(() => {
@@ -164,8 +200,12 @@ function ProfileTab(prop: ProfileTabProp) {
             >
               <Timeline posts={posts} />
             </div>
-            <div style={GetStyleTab(TabType.FOLLOWING)}>팔로잉</div>
-            <div style={GetStyleTab(TabType.FOLLOWER)}>팔로워</div>
+            <div style={GetStyleTab(TabType.FOLLOWING)}>
+              <ProfileUsers users={following} />
+            </div>
+            <div style={GetStyleTab(TabType.FOLLOWER)}>
+              <ProfileUsers users={follower} />
+            </div>
             <div style={GetStyleTab(TabType.MEDIA)}>미디어</div>
           </div>
         </div>

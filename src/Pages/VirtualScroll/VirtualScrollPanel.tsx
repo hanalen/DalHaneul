@@ -5,11 +5,12 @@ import { Record } from '@/Interfaces/Record';
 import { useSelector } from 'react-redux';
 import { RootState, store } from '../../store/Store';
 import { feedSlice } from '../../store/FeedSlice';
+import { ProfileView } from '@atproto/api/dist/client/types/app/bsky/actor/defs';
 
 export interface VirtualScrollPanelProp {
   minHeight: number;
   maxItemCount: number;
-  items: AppBskyFeedDefs.FeedViewPost[];
+  items: AppBskyFeedDefs.FeedViewPost[] | ProfileView[];
 }
 
 export interface VirtualScrollItemData {
