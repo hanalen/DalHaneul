@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  ReactNode,
+} from 'react';
 import { AppBskyFeedDefs } from '@atproto/api';
 import VirtualScrollItem from './VirtualScrollItem';
 import { Record } from '@/Interfaces/Record';
@@ -15,6 +21,7 @@ export interface VirtualScrollPanelProp {
    */
   itemKey: string;
   items: any[];
+  renderItem: (item: any) => ReactNode; // children을 생성하는 함수 prop 추가
 }
 
 export interface VirtualScrollItemData {
@@ -82,7 +89,12 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
     if (item.reason) {
       return new Date(item.reason.indexedAt as string).getTime();
     } else {
-      return new Date((item.post.record as Record).createdAt).getTime();
+      if (item.post && item.post.record) {
+        const record = item.post.record as Record;
+        return new Date(record.createdAt).getTime();
+      } else {
+        return 0;
+      }
     }
   };
 
@@ -199,7 +211,9 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
             height={item.height}
             scrollTop={item.scrollTop}
             onChangeHeight={OnChangeChildHeight}
-          />
+          >
+            {prop.renderItem(item.item)}
+          </VirtualScrollItem>
         ))}
       </div>
     </div>

@@ -23,6 +23,7 @@ export interface VirtualScrollItemProp {
   scrollTop: number;
   itemKey: string;
   item: any;
+  children: React.ReactNode;
 }
 
 function VirtualScrollItem(prop: VirtualScrollItemProp) {
@@ -72,7 +73,7 @@ function VirtualScrollItem(prop: VirtualScrollItemProp) {
       ref={childrenRef}
       style={style}
     >
-      <FeedItem feed={prop.item} />
+      {prop.children}
     </div>
   );
 }
