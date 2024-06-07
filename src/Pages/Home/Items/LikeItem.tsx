@@ -16,6 +16,7 @@ import {
 } from '../../../Dialogs/GlobalDialogProvider';
 import PostItem from './PostItem';
 import { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
+import NoAvatar from '@/Common/NoAvatar';
 
 export interface TimeLineProp {
   feed: AppBskyFeedDefs.FeedViewPost;
@@ -49,9 +50,16 @@ function LikeItem(prop: TimeLineProp) {
         <Icon className="mr-2 text-red-500">favorite</Icon>
       </div>
       <div>
-        <div className="flex flex-col">
-          <img src={author?.avatar} className="w-7 h-7 rounded-sm mr-1" />
-          <label>{author?.displayName}님이 좋아합니다.</label>
+        <div className="flex flex-col w-9 h-9">
+          {author?.avatar && (
+            <img
+              src={author.avatar}
+              alt="profile"
+              className="w-full rounded-sm mr-1"
+            />
+          )}
+          {!author?.avatar && <NoAvatar />}
+          <label>{author?.displayName || ''}님이 좋아합니다.</label>
         </div>
         <div className="p-2">
           <label>{record?.text}</label>

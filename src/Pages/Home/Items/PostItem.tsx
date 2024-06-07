@@ -16,6 +16,7 @@ import {
 } from '../../../Dialogs/GlobalDialogProvider';
 import { postSlice } from '../../../store/PostSlice';
 import { feedSlice } from '../../../store/FeedSlice';
+import NoAvatar from '@/Common/NoAvatar';
 
 export interface PostItemProp {
   isShowBottom: boolean;
@@ -137,17 +138,23 @@ function PostItem(prop: PostItemProp) {
   return (
     <div className="p-1">
       <div className="w-full flex">
-        <div className="shrink-0 p-1 cursor-pointer" onClick={OnClickAvatar}>
+        <div
+          className="shrink-0 p-1 w-12 h-12 cursor-pointer"
+          onClick={OnClickAvatar}
+        >
           {/* 프로필사진 영역 */}
-          <img
-            src={author?.avatar}
-            alt="profile"
-            className="w-10 h-10 rounded"
-          />
+          {author?.avatar && (
+            <img
+              src={author.avatar}
+              alt="profile"
+              className="w-full h-full rounded"
+            />
+          )}
+          {!author?.avatar && <NoAvatar />}
         </div>
         <div className="flex flex-col grow">
           {/* 텍스트영역 */}
-          <div>{`${author?.displayName} / ${author?.handle}`}</div>
+          <div>{`${author?.displayName || ''} / ${author?.handle}`}</div>
           <div>{record?.text}</div>
           {prop.isShowBottom && (
             <div className="text-sm flex justify-between w-full grow">

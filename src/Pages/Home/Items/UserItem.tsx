@@ -7,6 +7,7 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { SvgIcon, Icon } from '@mui/material';
+import NoAvatar from '@/Common/NoAvatar';
 
 export interface UserItemProp {
   user: ProfileView;
@@ -93,13 +94,7 @@ function UserItem(prop: UserItemProp) {
           {avatar && (
             <img src={avatar} alt="profile" className="w-full h-full rounded" />
           )}
-          {!avatar && (
-            <div className="text-4xl flex justify-center text-gray-400">
-              <div className="flex flex-col justify-center">
-                <Icon fontSize="inherit">person</Icon>
-              </div>
-            </div>
-          )}
+          {!avatar && <NoAvatar />}
         </div>
         <div className="flex flex-col grow shrink p-1">
           {/* 텍스트영역 */}

@@ -14,6 +14,7 @@ import {
   EDialogType,
   useGlobalDialog,
 } from '../../../Dialogs/GlobalDialogProvider';
+import NoAvatar from '@/Common/NoAvatar';
 
 export interface TimeLineProp {
   feed: AppBskyFeedDefs.FeedViewPost;
@@ -46,11 +47,14 @@ function FollowItem(prop: TimeLineProp) {
       <div className="w-full flex">
         <div className="shrink-0 p-1">
           {/* 프로필사진 영역 */}
-          <img
-            src={author?.avatar}
-            alt="profile"
-            className="w-10 h-10 rounded"
-          />
+          {author?.avatar && (
+            <img
+              src={author?.avatar}
+              alt="profile"
+              className="w-10 h-10 rounded"
+            />
+          )}
+          {!author?.avatar && <NoAvatar />}
         </div>
         <div>
           <label className="text-base">
