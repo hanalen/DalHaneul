@@ -6,6 +6,7 @@ import {
 } from '@atproto/api/dist/client/types/app/bsky/actor/defs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { SvgIcon, Icon } from '@mui/material';
 
 export interface UserItemProp {
   user: ProfileView;
@@ -84,14 +85,26 @@ function UserItem(prop: UserItemProp) {
   return (
     <div className="p-1 w-full">
       <div className="w-full flex">
-        <div className="shrink-0 p-1 cursor-pointer" onClick={OnClickAvatar}>
+        <div
+          className="shrink-0 w-12 h-12 p-1 cursor-pointer"
+          onClick={OnClickAvatar}
+        >
           {/* 프로필사진 영역 */}
-          <img src={avatar} alt="profile" className="w-10 h-10 rounded" />
+          {avatar && (
+            <img src={avatar} alt="profile" className="w-full h-full rounded" />
+          )}
+          {!avatar && (
+            <div className="text-4xl flex justify-center text-gray-400">
+              <div className="flex flex-col justify-center">
+                <Icon fontSize="inherit">person</Icon>
+              </div>
+            </div>
+          )}
         </div>
         <div className="flex flex-col grow shrink p-1">
           {/* 텍스트영역 */}
           <div>
-            <label className="text-wrap break-all">{`${displayName} / ${handle}`}</label>
+            <label className="text-wrap break-all">{`${displayName ?? ''} / ${handle}`}</label>
           </div>
           <div>
             <label className="text-wrap break-all">{description}</label>
