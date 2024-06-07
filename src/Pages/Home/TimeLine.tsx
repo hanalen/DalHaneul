@@ -11,6 +11,7 @@ function TimeLine(prop: TimeLineProp) {
     <div className="p-1 h-full grow shrink overflow-hidden">
       <VirtualScrollPanel
         items={prop.posts}
+        itemKey="post.cid"
         minHeight={40}
         maxItemCount={1000}
       />

@@ -10,11 +10,15 @@ import { ProfileView } from '@atproto/api/dist/client/types/app/bsky/actor/defs'
 export interface VirtualScrollPanelProp {
   minHeight: number;
   maxItemCount: number;
-  items: AppBskyFeedDefs.FeedViewPost[] | ProfileView[];
+  /**
+   * 'a', 'b.c', 'b.c.d' 등 하위 오브젝트일 경우 .으로 구분합니다.
+   */
+  itemKey: string;
+  items: any[];
 }
 
 export interface VirtualScrollItemData {
-  item: AppBskyFeedDefs.FeedViewPost;
+  item: any;
   scrollTop: number;
   height: number;
 }
@@ -29,19 +33,24 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
   const setKeys = useRef(new Set<string>());
 
   const { updatedFeeds } = useSelector((state: RootState) => state.feedState);
+
+  const GetValueByKey = useCallback((obj: any) => {
+    return prop.itemKey.split('.').reduce((acc, part) => acc && acc[part], obj);
+  }, []);
+
   /**
    * 업데이트 된 피드를 가상 스크롤 prop에 적용
    */
   const UpdateFeed = useCallback(() => {
     for (const feed of updatedFeeds) {
       const virtualItem = virtualItems.find(
-        (item) => item.item.post.uri === feed.post.uri
+        (item) => GetValueByKey(item.item) === feed.post.cid
       );
       if (virtualItem) {
         virtualItem.item = feed;
       }
       const renderItem = renderItems.find(
-        (item) => item.item.post.uri === feed.post.uri
+        (item) => GetValueByKey(item.item) === feed.post.cid
       );
       if (renderItem) {
         renderItem.item = feed;
@@ -50,11 +59,11 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
     }
   }, [updatedFeeds, virtualItems, renderItems]);
 
-  const OnChangeChildHeight = useCallback((key: string, height: number) => {
+  const OnChangeChildHeight = useCallback((itemKey: string, height: number) => {
     setVirtualItems((prevItems) => {
       const newVirtualItems = [...prevItems];
       const index = newVirtualItems.findIndex(
-        (item) => item.item.post.cid === key
+        (item) => GetValueByKey(item.item) === itemKey
       );
       if (index === -1) return prevItems;
       newVirtualItems[index].height = height;
@@ -78,20 +87,19 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
   };
 
   const OnChangeItems = useCallback(
-    (items: AppBskyFeedDefs.FeedViewPost[]) => {
+    (items: any[]) => {
       setVirtualItems((prevItems) => {
         const newVirtualItems = [...prevItems];
         const keys = setKeys.current;
         items.forEach((item) => {
-          const { post } = { ...item };
-          if (keys.has(post.cid)) return;
-          keys.add(post.cid);
+          if (keys.has(GetValueByKey(item))) return;
+          keys.add(GetValueByKey(item));
 
           const newItem = {
             item: item,
             height: prop.minHeight,
             scrollTop: 0,
-            key: item.post.cid,
+            key: GetValueByKey(item.item),
           };
           const newTime = GetCreatedAtTime(item);
           let isAdded = false;
@@ -185,7 +193,8 @@ function VirtualScrollPanel(prop: VirtualScrollPanelProp) {
       <div className="virtual-scroll-panel relative" style={styleVirtualPanel}>
         {renderItems.map((item) => (
           <VirtualScrollItem
-            key={item.item.post.cid}
+            itemKey={prop.itemKey}
+            key={GetValueByKey(item.item)}
             item={item.item}
             height={item.height}
             scrollTop={item.scrollTop}

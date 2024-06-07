@@ -1,4 +1,10 @@
-import React, { createRef, useEffect, useRef, useState } from 'react';
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { AppBskyFeedDefs, BskyAgent } from '@atproto/api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -12,16 +18,21 @@ import PostItem from '../Home/Items/PostItem';
 import FeedItem from '../Home/Items/FeedItem';
 
 export interface VirtualScrollItemProp {
-  onChangeHeight: (key: string, changeHeight: number) => void;
+  onChangeHeight: (itemKey: string, changeHeight: number) => void;
   height: number;
   scrollTop: number;
-  item: AppBskyFeedDefs.FeedViewPost;
+  itemKey: string;
+  item: any;
 }
 
 function VirtualScrollItem(prop: VirtualScrollItemProp) {
   const [style, setStyle] = useState<React.CSSProperties>({});
   const childrenRef = useRef<HTMLDivElement>(null);
   const prevHeight = useRef<number>(0);
+
+  const GetValueByKey = useCallback((obj: any) => {
+    return prop.itemKey.split('.').reduce((acc, part) => acc && acc[part], obj);
+  }, []);
 
   useEffect(() => {
     setStyle({
@@ -38,7 +49,7 @@ function VirtualScrollItem(prop: VirtualScrollItemProp) {
         if (height === 0) return;
         if (prop.onChangeHeight) {
           // const changeHeight = height - prevHeight.current;
-          prop.onChangeHeight(prop.item.post.cid, height);
+          prop.onChangeHeight(GetValueByKey(prop.item), height);
         }
         prevHeight.current = height;
       }
