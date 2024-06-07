@@ -82,16 +82,20 @@ function UserItem(prop: UserItemProp) {
   }, [user]);
 
   return (
-    <div className="p-1">
+    <div className="p-1 w-full">
       <div className="w-full flex">
         <div className="shrink-0 p-1 cursor-pointer" onClick={OnClickAvatar}>
           {/* 프로필사진 영역 */}
           <img src={avatar} alt="profile" className="w-10 h-10 rounded" />
         </div>
-        <div className="flex flex-col grow p-1">
+        <div className="flex flex-col grow shrink p-1">
           {/* 텍스트영역 */}
-          <div>{`${displayName} / ${handle}`}</div>
-          <div>{description}</div>
+          <div>
+            <label className="text-wrap break-all">{`${displayName} / ${handle}`}</label>
+          </div>
+          <div>
+            <label className="text-wrap break-all">{description}</label>
+          </div>
         </div>
         <div className="w-24 shrink-0 text-center">
           <button
