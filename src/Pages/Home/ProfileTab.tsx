@@ -147,11 +147,11 @@ function ProfileTab(prop: ProfileTabProp) {
   else
     return (
       <div className="p-2 shrink grow flex flex-col h-full overflow-hidden">
-        <div className="w-full mb-4">
+        <div className="w-full mb-4 h-[141px] shrink-0">
           <img className="rounded-2xl" src={profile.banner} />
         </div>
         <div className="flex">
-          <div className="mr-2">
+          <div className="mr-2 shrink-0">
             <img className="w-16 h-16 rounded-lg" src={profile.avatar} />
           </div>
           <div>
@@ -200,10 +200,16 @@ function ProfileTab(prop: ProfileTabProp) {
             >
               <Timeline posts={posts} />
             </div>
-            <div style={GetStyleTab(TabType.FOLLOWING)}>
+            <div
+              style={GetStyleTab(TabType.FOLLOWING)}
+              className="overflow-hidden grow shrink-0"
+            >
               <ProfileUsers users={following} />
             </div>
-            <div style={GetStyleTab(TabType.FOLLOWER)}>
+            <div
+              style={GetStyleTab(TabType.FOLLOWER)}
+              className="overflow-hidden grow shrink-0"
+            >
               <ProfileUsers users={follower} />
             </div>
             <div style={GetStyleTab(TabType.MEDIA)}>미디어</div>
